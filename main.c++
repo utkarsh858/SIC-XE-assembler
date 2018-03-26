@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <cstdlib>
+#include <algorithm>
 
 using namespace std;
 
@@ -12,12 +13,18 @@ int main(int argc, char const *argv[])
 {
 	ifstream in;
 	in.open("input.txt");
+	ofstream out;
+	out.open("intermediate_file");
+
 	string x;
 	long locctr;
 	int starting_addr;
 	queue<string> commands;
-	
+	long program_length ;
 	//Pass 1
+	vector <string> SYMTAB_name;
+	vector <string> SYMTAB_address;
+	vector <string> SYMTAB_error_flag;
 
 	while (getline(in, x)){
 		commands.push(x);
@@ -36,21 +43,43 @@ int main(int argc, char const *argv[])
 		}  
 
 
-		// int size = args.size();
+		int size = args.size();
 
-		// cout << args[0] << args[1] <<endl;
-		// if(args[size-2] == "START"){
+		cout << args[0] << args[1] <<endl;
 
-		// 	starting_addr = atoi(args[size - 1]);
-		// 	locctr = starting_addr;
+		if(args[0][0] != '.'){  // comment handling
+			if(args[size-2] == "START"){ // strting address
+	
+					starting_addr = atoi(args[size - 1]);
+					locctr = starting_addr;
+	
+				} else locctr = 0;
+	
+			if (args[size-2] == "END" ){  //if
+				
+				ofstream << x;
+				program_length = locctr;
+			
+			} // end opcode
+			else {
 
-		// } else locctr = 0;
+				if(args.size() == 3){ //if LABEL field has a value
+					// searching for the label
+					int pos;
+					if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[0])) != SYMTAB_name.end()){
+						//found. set error flag
+						SYMTAB_error_flag[pos] = "D";
+					} else {
+						//not found
+						SYMTAB_name.push_back(args[0]);
+						SYMTAB_address.push_back(to_string(locctr));
+						SYMTAB_error_flag.push_back("");
+					}
+				}
 
-		// while (args[size-2] != "OPCODE"){
+			}
 
-		// } // end opcode
-
-	}
+		}
 
 	//Pass 2
 
