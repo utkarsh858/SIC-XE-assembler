@@ -10,6 +10,37 @@
 
 using namespace std;
 
+string removeSpaces(string word , string position){
+
+    if(position == "Front"){
+        for(int i =0;  i <word.length();i++){
+            if(word[i] != ' '){
+                return word;
+            }else{
+                word.erase(i);
+            }
+        }
+        return word;
+
+    }else if(position == "Back"){
+        for(int i =word.length() - 1 ;  i >=0 ; i--){
+            if(word[i] != ' '){
+                return word;
+            }else{
+                word.erase(i);
+            }
+        }
+        return word;
+    }
+}
+
+string trim(string word) {
+
+    if(word[0] == ' ') return removeSpaces(word, "Front");
+    if(word[word.size()-1] == ' ') return removeSpaces(word , "Back");
+    return word;
+}
+
 int main(int argc, char const *argv[])
 {
 	ifstream in;
@@ -26,6 +57,8 @@ int main(int argc, char const *argv[])
 	vector <string> SYMTAB_name;
 	vector <string> SYMTAB_address;
 	vector <string> SYMTAB_error_flag;
+	vector <string> OPCODE_errors;
+	vector <string> OPTAB_name;
 
 	while (getline(in, x)){
 		commands.push(x);
@@ -46,7 +79,13 @@ int main(int argc, char const *argv[])
 
 		int size = args.size();
 
-		cout << args[0] << args[1] <<endl;
+		//trimming failed
+		// args[0] = trim(args[0]);
+		// args[1] = trim(args[1]);
+		// if(args.size() == 3)
+			// args[0] = trim(args[0]);
+		cout << trim("    ttt   ")<<"ff";
+		cout << args[0] << "|"<< args[1] << "|"<<endl;
 
 		if(args[0][0] != '.'){  // comment handling
 			if(args[size-2] == "START"){ // strting address
@@ -58,7 +97,6 @@ int main(int argc, char const *argv[])
 	
 			if (args[size-2] == "END" ){  //if
 				
-				out << x;
 				program_length = locctr;
 			
 			} // end opcode
@@ -78,8 +116,22 @@ int main(int argc, char const *argv[])
 					}
 				}
 
-				if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[0])) != SYMTAB_name.end()){
-					
+				if((pos = find(OPTAB_name.begin(), OPTAB_name.end(), args[0])) != OPTAB_name.end()){ // searching for optab
+					locctr += 3;
+				} else if(args[size-2] == "WORD"){
+					locctr += 3;
+
+				} else if(args[size-2] == "RESB"){
+					locctr += stoi(args[size-1]);
+
+				} else if(args[size-2] == "RESW"){
+					locctr += 3 * stoi(args[size-1]);
+
+				} else if(args[size-2] == "BYTE"){
+					string s = args[size-1].substr(2, size-3);
+					locctr += s.size()/2 ;
+				} else {
+					OPCODE_errors.push_back(args[size-2]+" Invalid OPCODE");
 				}
 
 			}
