@@ -4,6 +4,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <vector>
+#include <string>
 #include <cstdlib>
 #include <algorithm>
 
@@ -50,25 +51,25 @@ int main(int argc, char const *argv[])
 		if(args[0][0] != '.'){  // comment handling
 			if(args[size-2] == "START"){ // strting address
 	
-					starting_addr = atoi(args[size - 1]);
+					starting_addr = stoi(args[size - 1],nullptr,0);
 					locctr = starting_addr;
 	
 				} else locctr = 0;
 	
 			if (args[size-2] == "END" ){  //if
 				
-				ofstream << x;
+				out << x;
 				program_length = locctr;
 			
 			} // end opcode
 			else {
+				vector<string>::iterator pos;
 
 				if(args.size() == 3){ //if LABEL field has a value
 					// searching for the label
-					int pos;
 					if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[0])) != SYMTAB_name.end()){
 						//found. set error flag
-						SYMTAB_error_flag[pos] = "D";
+						*pos = "D";
 					} else {
 						//not found
 						SYMTAB_name.push_back(args[0]);
@@ -77,10 +78,16 @@ int main(int argc, char const *argv[])
 					}
 				}
 
+				if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[0])) != SYMTAB_name.end()){
+					
+				}
+
 			}
 
 		}
 
+	}//Pass 1 end
+	cout <<"symtab  " << SYMTAB_name[0];
 	//Pass 2
 
 
