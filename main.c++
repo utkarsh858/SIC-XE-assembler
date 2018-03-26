@@ -20,7 +20,6 @@ int main(int argc, char const *argv[])
 	//Pass 1
 
 	while (getline(in, x)){
-
 		commands.push(x);
 
 		//splitting the string
@@ -34,8 +33,9 @@ int main(int argc, char const *argv[])
 		    token = x.substr(0, pos);
 			args.push_back(token);		    
 		    x.erase(0, pos + delimiter.length());
-		}
-		cout << args[0] << "\n\n\n\n\n" << args[1] << endl << args[2];
+		}  
+
+
 		// int size = args.size();
 
 		// cout << args[0] << args[1] <<endl;
