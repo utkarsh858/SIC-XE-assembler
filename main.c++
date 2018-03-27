@@ -41,12 +41,18 @@ string trim(string word) {
     return word;
 }
 
+void initialize_OPTAB(vector<string>&  key, vector<string>&  fields){
+
+	
+	
+}
+
 int main(int argc, char const *argv[])
 {
 	ifstream in;
 	in.open("input.txt");
 	ofstream out;
-	out.open("intermediate_file");
+	out.open("output.txt");
 
 	string x;
 	long locctr;
@@ -59,6 +65,9 @@ int main(int argc, char const *argv[])
 	vector <string> SYMTAB_error_flag;
 	vector <string> OPCODE_errors;
 	vector <string> OPTAB_name;
+	string text_record;
+
+	initialize_OPTAB(OPTAB_name, OPTAB_code);
 
 	while (getline(in, x)){
 		commands.push(x);
@@ -117,7 +126,7 @@ int main(int argc, char const *argv[])
 				}
 
 				if((pos = find(OPTAB_name.begin(), OPTAB_name.end(), args[0])) != OPTAB_name.end()){ // searching for optab
-					locctr += 3;
+					locctr += 3;   //have to see which type of opcode
 				} else if(args[size-2] == "WORD"){
 					locctr += 3;
 
@@ -139,9 +148,52 @@ int main(int argc, char const *argv[])
 		}
 
 	}//Pass 1 end
+	program_length = locctr;
 	cout <<"symtab  " << SYMTAB_name[0];
 	//Pass 2
 
+	while(x = commands.pop_front()){
+
+		//splitting the string
+		vector<string> args;
+		
+		string delimiter = " ";
+		string token = x.substr(0, x.find(delimiter));
+		
+		size_t pos = 0;
+		while ((pos = x.find(delimiter)) != string::npos) {
+		    token = x.substr(0, pos);
+			args.push_back(token);		    
+		    x.erase(0, pos + delimiter.length());
+		}  
+
+
+		int size = args.size();
+
+		if(args[0][0] != '.'){  // comment handling
+			if(args[size-2] == "START"){ // strting address
+				//I dont know
+			}
+			out << "H" << args[0];
+			for(int i=args[0].size();6;i++) out << " ";
+			for (int i = args[2].size(); i < 6; ++i)
+				out << 0;
+			out << args[2];
+			for (int i = stoi(locctr).size(); i < 6; ++i)
+				out << 0;
+			out << args[1] << endl;
+
+			if(args[size-2] == "END"){
+				// write last text record 
+				out << text_record << endl;
+				out << "E";
+				vector<string> pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[size-1]);
+				// I am doomed
+			}
+
+
+		}
+	}
 
 	return 0;
 }
