@@ -43,8 +43,9 @@ string trim(string word) {
 
 void initialize_OPTAB(vector<string>&  key, vector<string>&  fields){
 
-	
-	
+key.push_back("ADD");key.push_back("ADDF");key.push_back("ADDR");key.push_back("AND");key.push_back("CLEAR");key.push_back("COMP");key.push_back("COMPF");key.push_back("COMPFR");key.push_back("DIV");key.push_back("DIVF");key.push_back("DIVR");key.push_back("FIX");key.push_back("FLOAT");key.push_back("HIO");key.push_back("J");key.push_back("JEQ");key.push_back("JGT");key.push_back("JLT");key.push_back("JSUB");key.push_back("LDA");key.push_back("LDB");key.push_back("LDCH");key.push_back("LDF");key.push_back("LDL");key.push_back("LDS");key.push_back("LDT");key.push_back("LDX");key.push_back("LPS");key.push_back("MUL");key.push_back("MULF");key.push_back("MULR");key.push_back("NORM");key.push_back("OR");key.push_back("RD");key.push_back("RMO");key.push_back("RSUB");key.push_back("SHIFTL");key.push_back("SHIFTR");key.push_back("SIO");key.push_back("SSK");key.push_back("STA");key.push_back("STB");key.push_back("STCH");key.push_back("STF");key.push_back("STI");key.push_back("STL");key.push_back("STS");key.push_back("STSW");key.push_back("STT");key.push_back("STX");key.push_back("SUB");key.push_back("SUBF");key.push_back("SUBR");key.push_back("SVC");key.push_back("TD")key.push_back("TIO");key.push_back("TIX");key.push_back("TIXR");key.push_back("WD");
+
+
 }
 
 int main(int argc, char const *argv[])
@@ -65,6 +66,7 @@ int main(int argc, char const *argv[])
 	vector <string> SYMTAB_error_flag;
 	vector <string> OPCODE_errors;
 	vector <string> OPTAB_name;
+	vector <string> OPTAB_code;
 	string text_record;
 
 	initialize_OPTAB(OPTAB_name, OPTAB_code);
@@ -153,7 +155,7 @@ int main(int argc, char const *argv[])
 	//Pass 2
 
 	while(x = commands.pop_front()){
-
+		string operand_address;
 		//splitting the string
 		vector<string> args;
 		
@@ -187,9 +189,38 @@ int main(int argc, char const *argv[])
 				// write last text record 
 				out << text_record << endl;
 				out << "E";
-				vector<string> pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[size-1]);
-				// I am doomed
+				int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[size-1]) - SYMTAB_name.begin();
+				string program_start = *(SYMTAB_address.begin() + pos) ;
+				for (int i = program_start.size(); i <= 6 ; ++i)
+					out << "0";
+				out << program_start << endl;
 			}
+
+			if(find(OPCODE_name.begin(),OPCODE_name.end(), args[size-2]) != OPCODE_name.end()){
+				//found
+				if(symbol found in operand field){
+					if(find(SYMTAB_name.begin(), SYMTAB_name.end(), args[size-1]) != SYMTAB_name.end()){
+
+						int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), args[size-1]) - SYMTAB_name.begin();
+						operand_address = *(SYMTAB_address.begin()+pos);
+
+					}
+					else {
+						operand_address = "0";
+						OPCODE_errors.push("Undefined symbol"+args[size-2]);
+					}
+					//assemble the object code instruction
+				}
+			} else if(args[size-2] == "BYTE" || args[size-2] == "WORD"){
+				// constant to object code
+			}
+
+			if(text_record.size() + object_code.size() > 69){
+				out << text_record <<endl;
+				initialize_T(text_record);
+			}
+			text_record += object_code;
+
 
 
 		}
