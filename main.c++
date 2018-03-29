@@ -105,7 +105,7 @@ int main(int argc, char const *argv[])
 
 		string delimiter = " ";
 		string token = x.substr(0, x.find(delimiter));
-		
+		cout << "1" <<endl;
 		size_t pos = 0;
 		while ((pos = x.find(delimiter)) != string::npos) {
 		    token = x.substr(0, pos);
@@ -113,6 +113,7 @@ int main(int argc, char const *argv[])
 		    x.erase(0, pos + delimiter.length());
 		}  
 
+		cout << "2" <<endl;
 
 		int size = args.size();
 
@@ -121,13 +122,14 @@ int main(int argc, char const *argv[])
 			label = args[0];
 			operand = args[2];
 		} else if(size == 2){
-			opcode = args[1];
-			operand = args[2];
+			opcode = args[0];
+			operand = args[1];
 
 		} else if(size == 1){
-			label = args[0];
+			opcode = args[0];
 
 		}
+		cout << "3" <<endl;
 
 		//trimming failed
 		// args[0] = trim(args[0]);
@@ -136,18 +138,21 @@ int main(int argc, char const *argv[])
 			// args[0] = trim(args[0]);
 		if(size > 0){
 		cout << label << "|"<< opcode << "|"<< operand <<endl;
+		cout << "4" << endl;
 
 		if(args[0][0] != '.'){  // comment handling
 			if(opcode == "START"){ // strting address
 	
 					starting_addr = stoi(operand,nullptr,0);
 					locctr = starting_addr;
+		cout << "5" << endl;
 	
 				} else locctr = 0;
 	
 			if (opcode == "END" ){  //if
 				
 				program_length = locctr;
+		cout << "6" << endl;
 			
 			} // end opcode
 			else {
@@ -164,6 +169,8 @@ int main(int argc, char const *argv[])
 						SYMTAB_address.push_back(to_string(locctr));
 						SYMTAB_error_flag.push_back("");
 					}
+		cout << "7"<<endl;
+
 				}
 
 				if((pos = find(OPTAB_name.begin(), OPTAB_name.end(), args[0])) != OPTAB_name.end()){ // searching for optab
@@ -185,6 +192,7 @@ int main(int argc, char const *argv[])
 				}
 
 			}
+		cout << "9" <<endl;
 
 		}
 	} // no command
@@ -192,10 +200,14 @@ int main(int argc, char const *argv[])
 		operand = "";
 		opcode = "";
 		label = "";
+		cout << "10"<<endl;
+
 	}//Pass 1 end
 	program_length = locctr;
 	//Pass 2
 	locctr = 0 ;
+		cout << "11"<<endl;
+
 	while((x = commands.front()) != ""){
 		commands.pop();
 		//splitting the string
