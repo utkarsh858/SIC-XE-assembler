@@ -43,13 +43,14 @@ string trim(string word) {
 }
 
 void initialize_OPTAB(vector<string>&  key, vector<string>&  fields){
-
+	cout << "OPTAB initialized succesfully" << endl;
 	fields.push_back("18");fields.push_back("58");fields.push_back("90");fields.push_back("40");fields.push_back("B4");fields.push_back("28");fields.push_back("88");fields.push_back("A0");fields.push_back("24");fields.push_back("64");fields.push_back("9C");fields.push_back("C4");fields.push_back("C0");fields.push_back("F4");fields.push_back("3C");fields.push_back("30");fields.push_back("34");fields.push_back("38");fields.push_back("48");fields.push_back("00");fields.push_back("68");fields.push_back("50");fields.push_back("70");fields.push_back("08");fields.push_back("6C");fields.push_back("74");fields.push_back("04");fields.push_back("D0");fields.push_back("20");fields.push_back("60");fields.push_back("98");fields.push_back("C8");fields.push_back("44");fields.push_back("D8");fields.push_back("AC");fields.push_back("4C");fields.push_back("A4");fields.push_back("A8");fields.push_back("F0");fields.push_back("EC");fields.push_back("0C");fields.push_back("78");fields.push_back("54");fields.push_back("80");fields.push_back("D4");fields.push_back("14");fields.push_back("7C");fields.push_back("E8");fields.push_back("84");fields.push_back("10");fields.push_back("1C");fields.push_back("5C");fields.push_back("94");fields.push_back("B0");fields.push_back("E0");fields.push_back("F8");fields.push_back("2C");fields.push_back("B8");fields.push_back("DC");
 	key.push_back("ADD");key.push_back("ADDF");key.push_back("ADDR");key.push_back("AND");key.push_back("CLEAR");key.push_back("COMP");key.push_back("COMPF");key.push_back("COMPFR");key.push_back("DIV");key.push_back("DIVF");key.push_back("DIVR");key.push_back("FIX");key.push_back("FLOAT");key.push_back("HIO");key.push_back("J");key.push_back("JEQ");key.push_back("JGT");key.push_back("JLT");key.push_back("JSUB");key.push_back("LDA");key.push_back("LDB");key.push_back("LDCH");key.push_back("LDF");key.push_back("LDL");key.push_back("LDS");key.push_back("LDT");key.push_back("LDX");key.push_back("LPS");key.push_back("MUL");key.push_back("MULF");key.push_back("MULR");key.push_back("NORM");key.push_back("OR");key.push_back("RD");key.push_back("RMO");key.push_back("RSUB");key.push_back("SHIFTL");key.push_back("SHIFTR");key.push_back("SIO");key.push_back("SSK");key.push_back("STA");key.push_back("STB");key.push_back("STCH");key.push_back("STF");key.push_back("STI");key.push_back("STL");key.push_back("STS");key.push_back("STSW");key.push_back("STT");key.push_back("STX");key.push_back("SUB");key.push_back("SUBF");key.push_back("SUBR");key.push_back("SVC");key.push_back("TD");key.push_back("TIO");key.push_back("TIX");key.push_back("TIXR");key.push_back("WD");
 
 }
 
-void write_the_text_record(string text_record, string object_code, ofstream& out, long locctr){
+void write_the_text_record(string& text_record, string object_code, ofstream& out, long locctr){
+	cout << "Writing to text record\n" ;
 	if(text_record.size() + object_code.size() > 69){
 		out << text_record <<endl;
 				//initialize_T(text_record);
@@ -58,6 +59,7 @@ void write_the_text_record(string text_record, string object_code, ofstream& out
 		text_record += "1E";
 
 	}
+	cout << "This -> " <<object_code << endl;
 	text_record += object_code;
 }
 
@@ -67,6 +69,7 @@ string parse(string s){
 	{
 		res += to_string((int)s[i]);
 	}
+	cout << "Parsed string is :: "+res+"----";
 	return res;
 }
 
@@ -78,7 +81,7 @@ int main(int argc, char const *argv[])
 	out.open("output.txt");
 
 	string x;
-	long locctr;
+	long locctr = 0;
 	int starting_addr;
 	queue<string> commands;
 	long program_length ;
@@ -97,6 +100,7 @@ int main(int argc, char const *argv[])
 	string operand = "";
 	string label = "";
 
+	//Pass 1
 	while (getline(in, x)){
 		cout << "Got this::: " << x;
 		if(x != "")
@@ -154,7 +158,7 @@ int main(int argc, char const *argv[])
 				locctr = starting_addr;
 				cout << "5" << endl;
 
-			} else locctr = 0;
+			} ;
 
 			if (opcode == "END" ){  //if
 				
@@ -165,14 +169,16 @@ int main(int argc, char const *argv[])
 			else {
 				vector<string>::iterator pos;
 
-				if(size == 3){ //if LABEL field has a value
+				if(label != ""){ //if LABEL field has a value
 					// searching for the label
+					cout << "LABEL found" << endl;
 					if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), label)) != SYMTAB_name.end()){
 						//found. set error flag
-						*pos = "D";
+						OPCODE_errors.push_back("OOPs duplicate label -> "+*pos);
 					} else {
 						//not found
 						SYMTAB_name.push_back(label);
+						cout << locctr << endl;
 						SYMTAB_address.push_back(to_string(locctr));
 						SYMTAB_error_flag.push_back("");
 					}
@@ -180,7 +186,8 @@ int main(int argc, char const *argv[])
 
 				}
 
-				if((pos = find(OPTAB_name.begin(), OPTAB_name.end(), args[0])) != OPTAB_name.end()){ // searching for optab
+				if(find(OPTAB_name.begin(), OPTAB_name.end(), opcode) != OPTAB_name.end()){ // searching for optab
+					cout << "mast\n";
 					locctr += 3;   //have to see which type of opcode
 				} else if(opcode == "WORD"){
 					locctr += 3;
@@ -192,6 +199,7 @@ int main(int argc, char const *argv[])
 					locctr += 3 * stoi(operand);
 
 				} else if(opcode == "BYTE"){
+					//------------------------------------------------------------------
 					string s = operand.substr(2, size-3);
 					locctr += s.size()/2 ;
 				} else {
@@ -209,11 +217,26 @@ int main(int argc, char const *argv[])
 	cout << "10"<<endl;
 
 	}//Pass 1 end
+
+
+
+	cout << "Pass 1 finished!\n";
+	cout << "SYMTAB has been maufactured as follows:\n";
+	for (vector<string>::iterator i = SYMTAB_name.begin(); i < SYMTAB_name.end(); ++i)
+	{
+		int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), *i) - SYMTAB_name.begin();
+		cout << *(SYMTAB_name.begin()+pos);
+		cout << "\t" << *(SYMTAB_address.begin()+pos) << endl;
+	}
+	in.close();
 	program_length = locctr;
-	//Pass 2
 	locctr = 0 ;
 	cout << "11"<<endl;
 
+
+
+
+	//Pass 2
 	while(!commands.empty()){
 		x = commands.front();
 		commands.pop();
@@ -232,7 +255,7 @@ int main(int argc, char const *argv[])
 			x.erase(0, pos + delimiter.length());
 		}  
 		args.push_back(x.substr(0, x.size()));
-		
+
 		cout << "13"<<endl;
 
 		int size = args.size();
@@ -260,9 +283,9 @@ int main(int argc, char const *argv[])
 				locctr = starting_addr;
 
 
-					//lets initialize a new text record
+					
 				out << "H" << label;
-				for(int i=label.size();i <= 6;i++) out << " ";
+				for(int i=label.size();i < 6;i++) out << " ";
 					for (int i = operand.size(); i < 6; ++i)
 						out << 0;
 					out << operand;
@@ -272,7 +295,7 @@ int main(int argc, char const *argv[])
 
 				//new text record initialized
 					text_record+="T";
-					for (int i = operand.size(); i <= 6; ++i) text_record += "0";
+					for (int i = operand.size(); i < 6; ++i) text_record += "0";
 						text_record += operand;
 					text_record += "1E";
 					cout << "15"<<endl;
@@ -285,7 +308,7 @@ int main(int argc, char const *argv[])
 					out << "E";
 					int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
 					string program_start = *(SYMTAB_address.begin() + pos) ;
-					for (int i = program_start.size(); i <= 6 ; ++i)
+					for (int i = program_start.size(); i < 6 ; ++i)
 						out << "0";
 					out << program_start << endl;
 					cout << "16"<<endl;
@@ -328,11 +351,11 @@ int main(int argc, char const *argv[])
 						locctr += 3;
 
 						//converting to hexadecimal
-							int num_dec= stoi(operand);
+							int num_dec = stoi(operand);
 							std::stringstream ss;
 						ss<< std::hex << num_dec; // int decimal_value
 						std::string num_hex ( ss.str() );
-						for(int i = num_hex.size();i <= 6 ;i++) 
+						for(int i = num_hex.size();i < 6 ;i++) 
 							object_code += "0";
 						object_code += num_hex;
 	
@@ -343,9 +366,10 @@ int main(int argc, char const *argv[])
 						else {
 							string record;
 							if(operand[0] == 'X'){
-								record = parse(operand);
+								record = operand.substr(2,operand.size()-3);
+								cout << "The operand is"+operand+"The record is ......"+record;
 							}else if(operand[0] == 'C'){
-								record = operand.substr(2,size-3);
+								record = parse(operand);
 							}
 							object_code = record;
 							string s = operand.substr(2, size-3);
@@ -376,6 +400,6 @@ int main(int argc, char const *argv[])
 		opcode = "";
 		label = "";
 	}
-
+out.close();
 return 0;
 }
