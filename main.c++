@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <vector>
 #include <string>
+#include <sstream>
 #include <cstdlib>
 #include <algorithm>
 
@@ -43,18 +44,30 @@ string trim(string word) {
 
 void initialize_OPTAB(vector<string>&  key, vector<string>&  fields){
 
-key.push_back("ADD");key.push_back("ADDF");key.push_back("ADDR");key.push_back("AND");key.push_back("CLEAR");key.push_back("COMP");key.push_back("COMPF");key.push_back("COMPFR");key.push_back("DIV");key.push_back("DIVF");key.push_back("DIVR");key.push_back("FIX");key.push_back("FLOAT");key.push_back("HIO");key.push_back("J");key.push_back("JEQ");key.push_back("JGT");key.push_back("JLT");key.push_back("JSUB");key.push_back("LDA");key.push_back("LDB");key.push_back("LDCH");key.push_back("LDF");key.push_back("LDL");key.push_back("LDS");key.push_back("LDT");key.push_back("LDX");key.push_back("LPS");key.push_back("MUL");key.push_back("MULF");key.push_back("MULR");key.push_back("NORM");key.push_back("OR");key.push_back("RD");key.push_back("RMO");key.push_back("RSUB");key.push_back("SHIFTL");key.push_back("SHIFTR");key.push_back("SIO");key.push_back("SSK");key.push_back("STA");key.push_back("STB");key.push_back("STCH");key.push_back("STF");key.push_back("STI");key.push_back("STL");key.push_back("STS");key.push_back("STSW");key.push_back("STT");key.push_back("STX");key.push_back("SUB");key.push_back("SUBF");key.push_back("SUBR");key.push_back("SVC");key.push_back("TD")key.push_back("TIO");key.push_back("TIX");key.push_back("TIXR");key.push_back("WD");
 fields.push_back("18");fields.push_back("58");fields.push_back("90");fields.push_back("40");fields.push_back("B4");fields.push_back("28");fields.push_back("88");fields.push_back("A0");fields.push_back("24");fields.push_back("64");fields.push_back("9C");fields.push_back("C4");fields.push_back("C0");fields.push_back("F4");fields.push_back("3C");fields.push_back("30");fields.push_back("34");fields.push_back("38");fields.push_back("48");fields.push_back("00");fields.push_back("68");fields.push_back("50");fields.push_back("70");fields.push_back("08");fields.push_back("6C");fields.push_back("74");fields.push_back("04");fields.push_back("D0");fields.push_back("20");fields.push_back("60");fields.push_back("98");fields.push_back("C8");fields.push_back("44");fields.push_back("D8");fields.push_back("AC");fields.push_back("4C");fields.push_back("A4");fields.push_back("A8");fields.push_back("F0");fields.push_back("EC");fields.push_back("0C");fields.push_back("78");fields.push_back("54");fields.push_back("80");fields.push_back("D4");fields.push_back("14");fields.push_back("7C");fields.push_back("E8");fields.push_back("84");fields.push_back("10");fields.push_back("1C");fields.push_back("5C");fields.push_back("94");fields.push_back("B0");fields.push_back("E0");fields.push_back("F8");fields.push_back("2C");fields.push_back("B8");fields.push_back("DC");
+key.push_back("ADD");key.push_back("ADDF");key.push_back("ADDR");key.push_back("AND");key.push_back("CLEAR");key.push_back("COMP");key.push_back("COMPF");key.push_back("COMPFR");key.push_back("DIV");key.push_back("DIVF");key.push_back("DIVR");key.push_back("FIX");key.push_back("FLOAT");key.push_back("HIO");key.push_back("J");key.push_back("JEQ");key.push_back("JGT");key.push_back("JLT");key.push_back("JSUB");key.push_back("LDA");key.push_back("LDB");key.push_back("LDCH");key.push_back("LDF");key.push_back("LDL");key.push_back("LDS");key.push_back("LDT");key.push_back("LDX");key.push_back("LPS");key.push_back("MUL");key.push_back("MULF");key.push_back("MULR");key.push_back("NORM");key.push_back("OR");key.push_back("RD");key.push_back("RMO");key.push_back("RSUB");key.push_back("SHIFTL");key.push_back("SHIFTR");key.push_back("SIO");key.push_back("SSK");key.push_back("STA");key.push_back("STB");key.push_back("STCH");key.push_back("STF");key.push_back("STI");key.push_back("STL");key.push_back("STS");key.push_back("STSW");key.push_back("STT");key.push_back("STX");key.push_back("SUB");key.push_back("SUBF");key.push_back("SUBR");key.push_back("SVC");key.push_back("TD");key.push_back("TIO");key.push_back("TIX");key.push_back("TIXR");key.push_back("WD");
 
+}
+
+void write_the_text_record(string text_record, string object_code, ofstream& out, long locctr){
+			if(text_record.size() + object_code.size() > 69){
+				out << text_record <<endl;
+				//initialize_T(text_record);
+				text_record = "T";
+				text_record += locctr;
+				text_record += "1E";
+			
+			}
+			text_record += object_code;
 }
 
 string parse(string s){
 	string res;
-	for (int i = 2; i < s.size-1; ++i)
+	for (int i = 2; i < s.size()-1; ++i)
 	{
-		s += stoi((int)s[i]);
+		res += to_string((int)s[i]);
 	}
-	return s;
+	return res;
 }
 
 int main(int argc, char const *argv[])
@@ -80,14 +93,15 @@ int main(int argc, char const *argv[])
 
 	initialize_OPTAB(OPTAB_name, OPTAB_code);
 
+		string opcode = "";
+		string operand = "";
+		string label = "";
+
 	while (getline(in, x)){
 		commands.push(x);
 
 		//splitting the string
 		vector<string> args;
-		string opcode = NULL;
-		string operand = NULL;
-		string label = NULL;
 
 		string delimiter = " ";
 		string token = x.substr(0, x.find(delimiter));
@@ -102,15 +116,15 @@ int main(int argc, char const *argv[])
 
 		int size = args.size();
 
-		if(args.size == 3){
+		if(size == 3){
 			opcode = args[1];
 			label = args[0];
 			operand = args[2];
-		} else if(args.size == 2){
+		} else if(size == 2){
 			opcode = args[1];
 			operand = args[2];
 
-		} else if(args.size == 1){
+		} else if(size == 1){
 			label = args[0];
 
 		}
@@ -120,7 +134,7 @@ int main(int argc, char const *argv[])
 		// args[1] = trim(args[1]);
 		// if(args.size() == 3)
 			// args[0] = trim(args[0]);
-		if(args.size() > 0){
+		if(size > 0){
 		cout << label << "|"<< opcode << "|"<< operand <<endl;
 
 		if(args[0][0] != '.'){  // comment handling
@@ -139,7 +153,7 @@ int main(int argc, char const *argv[])
 			else {
 				vector<string>::iterator pos;
 
-				if(args.size() == 3){ //if LABEL field has a value
+				if(size == 3){ //if LABEL field has a value
 					// searching for the label
 					if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), label)) != SYMTAB_name.end()){
 						//found. set error flag
@@ -175,17 +189,18 @@ int main(int argc, char const *argv[])
 		}
 	} // no command
 
-		operand = NULL;
-		opcode = NULL;
-		label = NULL;
+		operand = "";
+		opcode = "";
+		label = "";
 	}//Pass 1 end
 	program_length = locctr;
 	//Pass 2
 	locctr = 0 ;
-	while(x = commands.pop_front()){
+	while((x = commands.front()) != ""){
+		commands.pop();
 		//splitting the string
 		vector<string> args;
-		
+		string object_code = "";
 		string delimiter = " ";
 		string token = x.substr(0, x.find(delimiter));
 		string opcode_num;
@@ -199,21 +214,21 @@ int main(int argc, char const *argv[])
 
 		int size = args.size();
 
-		if(args.size == 3){
+		if(size == 3){
 			opcode = args[1];
 			label = args[0];
 			operand = args[2];
-		} else if(args.size == 2){
+		} else if(size == 2){
 			opcode = args[1];
 			operand = args[2];
 
-		} else if(args.size == 1){
+		} else if(size == 1){
 			label = args[0];
 
 		}
 
 
-		if(args.size() > 0 ){
+		if(size > 0 ){
 
 		if(args[0][0] != '.'){  // comment handling
 			if(opcode == "START"){ // strting address
@@ -227,10 +242,11 @@ int main(int argc, char const *argv[])
 				for (int i = operand.size(); i < 6; ++i)
 					out << 0;
 				out << operand;
-				for (int i = stoi(locctr).size(); i < 6; ++i)
+				for (int i = to_string(locctr).size(); i < 6; ++i)
 					out << 0;
 				out << locctr << endl;
-	
+				
+				//new text record initialized
 				text_record+="T";
 				for (int i = operand.size(); i < 6; ++i) text_record += "0";
 				text_record += operand;
@@ -249,11 +265,11 @@ int main(int argc, char const *argv[])
 				out << program_start << endl;
 			}
 
-			if((find(OPCODE_name.begin(),OPCODE_name.end(), opcode)) != OPCODE_name.end()){
+			if((find(OPTAB_name.begin(),OPTAB_name.end(), opcode)) != OPTAB_name.end()){
 				string operand_address;
 				//found
 				locctr += 3;
-				if(operand != NULL){
+				if(operand != ""){
 					if(find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) != SYMTAB_name.end()){
 
 						int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
@@ -262,11 +278,14 @@ int main(int argc, char const *argv[])
 					}
 					else {
 						operand_address = "0";
-						OPCODE_errors.push("Undefined symbol"+opcode);
+						OPCODE_errors.push_back("Undefined symbol"+opcode);
 					}
 					//assemble the object code instruction
-					text_record += opcode_num;
-					text_record += operand_address;
+
+					object_code += opcode_num;
+					object_code += operand_address;
+
+					write_the_text_record(text_record, object_code, out, locctr);
 				}
 			} else if(opcode == "BYTE" || opcode == "WORD"){
 				// constant to object code
@@ -279,21 +298,26 @@ int main(int argc, char const *argv[])
 					ss<< std::hex << num_dec; // int decimal_value
 					std::string num_hex ( ss.str() );
 					for(int i = num_hex.size();i <= 6 ;i++) 
-						text_record += "0";
-					text_record += num_hex;
+						object_code += "0";
+					object_code += num_hex;
+
+					write_the_text_record(text_record, object_code, out, locctr);
 
 				}
-				else{
+				else {
 					string record;
 					if(operand[0] == 'X'){
 						record = parse(operand);
 					}else if(operand[0] == 'C'){
 						record = operand.substr(2,size-3);
 					}
-
+					object_code = record;
 					string s = operand.substr(2, size-3);
 					locctr += s.size()/2 ;
 					
+				}
+
+				write_the_text_record(text_record, object_code, out, locctr);
 
 				} else if(opcode == "RESB"){
 					locctr += stoi(operand);
@@ -303,24 +327,15 @@ int main(int argc, char const *argv[])
 
 			}
 
-			if(text_record.size() + object_code.size() > 69){
-				out << text_record <<endl;
-				//initialize_T(text_record);
-				text_record = "T";
-				text_record += locctr;
-				text_record += "1E";
-			
-			}
-			text_record += object_code;
 
 
 
 		}
-		}
+		
 
-		operand = NULL;
-		opcode = NULL;
-		label = NULL;
+		operand = "";
+		opcode = "";
+		label = "";
 	}
 
 	return 0;
