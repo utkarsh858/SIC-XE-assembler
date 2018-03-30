@@ -86,15 +86,17 @@ void initialize_OPTAB(vector<string>&  key, vector<string>&  fields){
 
 
 string parse(string s){
+	cout << "given string is :: " << s;
 	string res;
+	stringstream ss;
 	for (int i = 2; i < s.size()-1; ++i)
 	{
-		res += to_string((int)s[i]);
+		ss << hex << (int)s[i];
+		res += ss.str();
+		ss.str("");
 	}
-	cout << hex << "Parsed string is :: "+res+"----";
-	stringstream ss;
-	ss << hex << res;
-	return ss.str();
+	cout <<  "Parsed string is :: "+res+"----";
+	return res;
 }
 
 
