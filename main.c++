@@ -69,8 +69,10 @@ string parse(string s){
 	{
 		res += to_string((int)s[i]);
 	}
-	cout << "Parsed string is :: "+res+"----";
-	return res;
+	cout << hex << "Parsed string is :: "+res+"----";
+	stringstream ss;
+	ss << hex << res;
+	return ss.str();
 }
 
 int main(int argc, char const *argv[])
@@ -112,7 +114,7 @@ int main(int argc, char const *argv[])
 
 		string delimiter = " ";
 		string token = x.substr(0, x.find(delimiter));
-		cout << "1" <<endl;
+		// cout << "1" <<endl;
 		size_t pos = 0;
 		while ((pos = x.find(delimiter)) != string::npos) {
 			token = x.substr(0, pos);
@@ -120,7 +122,7 @@ int main(int argc, char const *argv[])
 			x.erase(0, pos + delimiter.length());
 		}  
 		args.push_back(x.substr(0, x.size()));
-		cout << "2" <<endl;
+		// cout << "2" <<endl;
 
 		int size = args.size();
 
@@ -141,7 +143,7 @@ int main(int argc, char const *argv[])
 			opcode = args[0];
 
 		}
-		cout << "3" <<endl;
+		// cout << "3" <<endl;
 
 		//trimming failed
 		// args[0] = trim(args[0]);
@@ -149,21 +151,23 @@ int main(int argc, char const *argv[])
 		// if(args.size() == 3)
 			// args[0] = trim(args[0]);
 			cout << label << "|"<< opcode << "|"<< operand <<endl;
-			cout << "4" << endl;
+			// cout << "4" << endl;
 
 		if(args[0][0] != '.'){  // comment handling
 			if(opcode == "START"){ // strting address
 
-				starting_addr = stoi(operand,nullptr,0);
+				starting_addr = stoi(operand,nullptr,16);
+				
+
 				locctr = starting_addr;
-				cout << "5" << endl;
+				// cout << "5" << endl;
 
 			} ;
 
 			if (opcode == "END" ){  //if
 				
 				program_length = locctr;
-				cout << "6" << endl;
+				// cout << "6" << endl;
 
 			} // end opcode
 			else {
@@ -171,7 +175,7 @@ int main(int argc, char const *argv[])
 
 				if(label != ""){ //if LABEL field has a value
 					// searching for the label
-					cout << "LABEL found" << endl;
+					// cout << "LABEL found" << endl;
 					if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), label)) != SYMTAB_name.end()){
 						//found. set error flag
 						OPCODE_errors.push_back("OOPs duplicate label -> "+*pos);
@@ -179,15 +183,17 @@ int main(int argc, char const *argv[])
 						//not found
 						SYMTAB_name.push_back(label);
 						cout << locctr << endl;
-						SYMTAB_address.push_back(to_string(locctr));
+						stringstream ss ;
+						ss << hex << locctr;
+						SYMTAB_address.push_back(ss.str());
 						SYMTAB_error_flag.push_back("");
 					}
-					cout << "7"<<endl;
+					// cout << "7"<<endl;
 
 				}
 
 				if(find(OPTAB_name.begin(), OPTAB_name.end(), opcode) != OPTAB_name.end()){ // searching for optab
-					cout << "mast\n";
+					// cout << "mast\n";
 					locctr += 3;   //have to see which type of opcode
 				} else if(opcode == "WORD"){
 					locctr += 3;
@@ -200,23 +206,40 @@ int main(int argc, char const *argv[])
 
 				} else if(opcode == "BYTE"){
 					//------------------------------------------------------------------
-					string s = operand.substr(2, size-3);
-					locctr += s.size()/2 ;
+					if(operand[0] == 'X')
+						locctr += (operand.size()-3)/2;
+					else
+						locctr += (operand.size()-3);
 				} else {
 					OPCODE_errors.push_back(opcode+" Invalid OPCODE");
 				}
 
 			}
-			cout << "9" <<endl;
+			// cout << "9" <<endl;
 
 		}
 
 	operand = "";
 	opcode = "";
 	label = "";
-	cout << "10"<<endl;
+	// cout << "10"<<endl;
 
 	}//Pass 1 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -231,7 +254,19 @@ int main(int argc, char const *argv[])
 	in.close();
 	program_length = locctr;
 	locctr = 0 ;
-	cout << "11"<<endl;
+	// cout << "11"<<endl;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -247,7 +282,7 @@ int main(int argc, char const *argv[])
 		string token = x.substr(0, x.find(delimiter));
 		string opcode_num;
 		size_t pos = 0;
-		cout << "12"<<endl;
+		// cout << "12"<<endl;
 
 		while ((pos = x.find(delimiter)) != string::npos) {
 			token = x.substr(0, pos);
@@ -256,7 +291,7 @@ int main(int argc, char const *argv[])
 		}  
 		args.push_back(x.substr(0, x.size()));
 
-		cout << "13"<<endl;
+		// cout << "13"<<endl;
 
 		int size = args.size();
 
@@ -274,7 +309,7 @@ int main(int argc, char const *argv[])
 		}
 
 		cout << args[0];
-		cout << "14"<<endl;
+		// cout << "14"<<endl;
 
 
 		if(args[0][0] != '.'){  // comment handling
@@ -298,7 +333,7 @@ int main(int argc, char const *argv[])
 					for (int i = operand.size(); i < 6; ++i) text_record += "0";
 						text_record += operand;
 					text_record += "1E";
-					cout << "15"<<endl;
+					// cout << "15"<<endl;
 
 				}
 				cout << "14.1" <<endl;
@@ -311,13 +346,15 @@ int main(int argc, char const *argv[])
 					for (int i = program_start.size(); i < 6 ; ++i)
 						out << "0";
 					out << program_start << endl;
-					cout << "16"<<endl;
+					// cout << "16"<<endl;
 
 				}
-				cout << "14.2" <<endl;
+				// cout << "14.2" <<endl;
 
 
 				if((find(OPTAB_name.begin(),OPTAB_name.end(), opcode)) != OPTAB_name.end()){
+					pos = find(OPTAB_name.begin(),OPTAB_name.end(), opcode) - OPTAB_name.begin();
+					opcode_num = *(pos + OPTAB_code.begin());
 					string operand_address;
 				//found
 					locctr += 3;
@@ -335,14 +372,14 @@ int main(int argc, char const *argv[])
 					//assemble the object code instruction
 
 					} else {
-						operand_address = "000000";							
+						operand_address = "0000";							
 					}
 						object_code += opcode_num;
 						object_code += operand_address;
-						cout << "14.3" <<endl;
+						// cout << "14.3" <<endl;
 
 
-						cout << "17"<<endl;
+						// cout << "17"<<endl;
 
 					write_the_text_record(text_record, object_code, out, locctr);
 				} else if(opcode == "BYTE" || opcode == "WORD"){
@@ -360,21 +397,22 @@ int main(int argc, char const *argv[])
 						object_code += num_hex;
 	
 							write_the_text_record(text_record, object_code, out, locctr);
-							cout << "18"<<endl;
+							// cout << "18"<<endl;
 	
 						}
 						else {
 							string record;
 							if(operand[0] == 'X'){
 								record = operand.substr(2,operand.size()-3);
-								cout << "The operand is"+operand+"The record is ......"+record;
+								// cout << "The operand is"+operand+"The record is ......"+record;
+								locctr += (operand.size()-3)/2 ;
 							}else if(operand[0] == 'C'){
 								record = parse(operand);
+								locctr += operand.size()-3;	
 							}
 							object_code = record;
 							string s = operand.substr(2, size-3);
-							locctr += s.size()/2 ;
-							cout << "19"<<endl;
+							// cout << "19"<<endl;
 					
 						}
 
@@ -385,10 +423,10 @@ int main(int argc, char const *argv[])
 						}else if(opcode == "RESW"){
 							locctr += stoi(operand) * 3;
 						}
-			cout << "14.4" <<endl;
+			// cout << "14.4" <<endl;
 
 		}
-			cout << "14.5" <<endl;
+			// cout << "14.5" <<endl;
 
 
 
