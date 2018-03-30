@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <queue>
+#include <cmath>
 #include <string.h>
 #include <stdio.h>
 #include <vector>
@@ -10,6 +11,40 @@
 #include <algorithm>
 
 using namespace std;
+
+void length_text_record(string& text_record){
+	
+	int size = (text_record.size()-9)/2;
+	stringstream ss;
+	cout << text_record<< "With size" << size<<endl;
+	ss << hex << size;
+	string s = ss.str();
+	if(s.size() == 1) s = "0"+s;
+	text_record = text_record.substr(0,7)+s+text_record.substr(9,text_record.size()-9);
+	cout << "changed text record" << text_record<<endl;
+}
+
+void write_the_text_record(string& text_record, string object_code, ofstream& out, long locctr){
+	cout << "Writing to text record\n" ;
+	if(text_record.size() + object_code.size() > 69){
+		length_text_record(text_record);
+		out << text_record <<endl;
+				//initialize_T(text_record);
+		text_record = "T";
+		stringstream ss;
+		ss << hex << locctr;
+		string counter = ss.str();
+		for (int i = 0; i < 6-counter.size(); ++i)
+		{
+			text_record += "0";
+		}
+		text_record += counter;
+		text_record += "1E";
+
+	}
+	cout << "This -> " <<object_code << endl;
+	text_record += object_code;
+}
 
 string removeSpaces(string word , string position){
 
@@ -49,19 +84,6 @@ void initialize_OPTAB(vector<string>&  key, vector<string>&  fields){
 
 }
 
-void write_the_text_record(string& text_record, string object_code, ofstream& out, long locctr){
-	cout << "Writing to text record\n" ;
-	if(text_record.size() + object_code.size() > 69){
-		out << text_record <<endl;
-				//initialize_T(text_record);
-		text_record = "T";
-		text_record += locctr;
-		text_record += "1E";
-
-	}
-	cout << "This -> " <<object_code << endl;
-	text_record += object_code;
-}
 
 string parse(string s){
 	string res;
@@ -74,6 +96,7 @@ string parse(string s){
 	ss << hex << res;
 	return ss.str();
 }
+
 
 int main(int argc, char const *argv[])
 {
@@ -95,7 +118,7 @@ int main(int argc, char const *argv[])
 	vector <string> OPTAB_name;
 	vector <string> OPTAB_code;
 	string text_record;
-
+	bool text_record_printer = true;
 	initialize_OPTAB(OPTAB_name, OPTAB_code);
 
 	string opcode = "";
@@ -314,7 +337,7 @@ int main(int argc, char const *argv[])
 
 		if(args[0][0] != '.'){  // comment handling
 			if(opcode == "START"){ // starting address
-				starting_addr = stoi(operand,nullptr,0);
+
 				locctr = starting_addr;
 
 
@@ -336,9 +359,10 @@ int main(int argc, char const *argv[])
 					// cout << "15"<<endl;
 
 				}
-				cout << "14.1" <<endl;
+				// cout << "14.1" <<endl;
 				if(opcode == "END"){
 				// write last text record 
+					length_text_record(text_record);
 					out << text_record << endl;
 					out << "E";
 					int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
@@ -359,6 +383,31 @@ int main(int argc, char const *argv[])
 				//found
 					locctr += 3;
 					if(operand != ""){
+						
+						if(text_record_printer == false)
+						{
+							length_text_record(text_record);
+							out << text_record << endl;
+							text_record = "T";
+							stringstream ss;
+							ss << hex << locctr;
+							string counter = ss.str();
+							for (int i = 0; i < 6-counter.size(); ++i)
+							{
+								text_record += "0";
+							}
+							text_record += counter;
+							text_record += "1E";
+							text_record_printer = true;
+						}
+
+						if(operand.find(",X") != string::npos){
+							cout << "HEY !!\n";
+						//index registering
+						operand = operand.substr(0,operand.size()-2);
+						}
+						
+
 						if(find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) != SYMTAB_name.end()){
 
 							int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
@@ -369,22 +418,47 @@ int main(int argc, char const *argv[])
 							operand_address = "0";
 							OPCODE_errors.push_back("Undefined symbol"+opcode);
 						}
-					//assemble the object code instruction
+						//assemble the object code instruction
+						if(operand.find(",X") != string::npos){
+							cout << "Krsna";
+							stringstream ss;
+							ss << hex << ((long)stoi(operand_address,nullptr,16) & (long)pow(2,15));
+							operand_address = ss.str();
+							cout << "Remember the operand_address ? " << operand_address; 
+						}
 
 					} else {
+						//have to initialize tet record
+						if(text_record_printer == false)
+						{
+							length_text_record(text_record);
+							out << text_record << endl;
+							text_record = "T";
+							stringstream ss;
+							ss << hex << locctr;
+							string counter = ss.str();
+							for (int i = 0; i < 6-counter.size(); ++i)
+							{
+								text_record += "0";
+							}
+							text_record += counter;
+							text_record += "1E";
+							text_record_printer = true;
+						}
+
 						operand_address = "0000";							
 					}
-						object_code += opcode_num;
-						object_code += operand_address;
+						
+					object_code += opcode_num;
+					object_code += operand_address;
 						// cout << "14.3" <<endl;
 
 
 						// cout << "17"<<endl;
 
 					write_the_text_record(text_record, object_code, out, locctr);
-				} else if(opcode == "BYTE" || opcode == "WORD"){
+				} else if( opcode == "WORD"){
 				// constant to object code
-					if(opcode == "WORD") {
 						locctr += 3;
 
 						//converting to hexadecimal
@@ -398,9 +472,7 @@ int main(int argc, char const *argv[])
 	
 							write_the_text_record(text_record, object_code, out, locctr);
 							// cout << "18"<<endl;
-	
-						}
-						else {
+				} else if(opcode == "BYTE"){
 							string record;
 							if(operand[0] == 'X'){
 								record = operand.substr(2,operand.size()-3);
@@ -414,25 +486,21 @@ int main(int argc, char const *argv[])
 							string s = operand.substr(2, size-3);
 							// cout << "19"<<endl;
 					
-						}
+						
 
 						write_the_text_record(text_record, object_code, out, locctr);
 
 						} else if(opcode == "RESB"){
 							locctr += stoi(operand);
+							text_record_printer = false;
 						}else if(opcode == "RESW"){
+							text_record_printer = false;
 							locctr += stoi(operand) * 3;
 						}
 			// cout << "14.4" <<endl;
 
 		}
 			// cout << "14.5" <<endl;
-
-
-
-
-
-
 
 		operand = "";
 		opcode = "";
