@@ -402,9 +402,11 @@ int main(int argc, char const *argv[])
 							text_record_printer = true;
 						}
 
+						bool indexaddr = false;
 						if(operand.find(",X") != string::npos){
 							cout << "HEY !!\n";
 						//index registering
+							indexaddr = true;
 						operand = operand.substr(0,operand.size()-2);
 						}
 						
@@ -420,10 +422,17 @@ int main(int argc, char const *argv[])
 							OPCODE_errors.push_back("Undefined symbol"+opcode);
 						}
 						//assemble the object code instruction
-						if(operand.find(",X") != string::npos){
+						cout << "ee" << operand;
+						if(indexaddr){
 							cout << "Krsna";
 							stringstream ss;
-							ss << hex << ((long)stoi(operand_address,nullptr,16) & (long)pow(2,15));
+							long temp = stoi(operand_address,nullptr,16);
+							ss << dec << temp;
+							temp = stoi(ss.str());
+							cout << temp <<endl;
+							ss.str("");
+							cout << (long)pow(2,15) <<endl;
+							ss << hex << (temp | (long)pow(2,15));
 							operand_address = ss.str();
 							cout << "Remember the operand_address ? " << operand_address; 
 						}
