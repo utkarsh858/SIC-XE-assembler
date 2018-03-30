@@ -383,7 +383,6 @@ int main(int argc, char const *argv[])
 					opcode_num = *(pos + OPTAB_code.begin());
 					string operand_address;
 				//found
-					locctr += 3;
 					if(operand != ""){
 						
 						if(text_record_printer == false)
@@ -459,9 +458,10 @@ int main(int argc, char const *argv[])
 						// cout << "17"<<endl;
 
 					write_the_text_record(text_record, object_code, out, locctr);
+					locctr += 3;
+
 				} else if( opcode == "WORD"){
 				// constant to object code
-						locctr += 3;
 
 						//converting to hexadecimal
 							int num_dec = stoi(operand);
@@ -474,23 +474,26 @@ int main(int argc, char const *argv[])
 	
 							write_the_text_record(text_record, object_code, out, locctr);
 							// cout << "18"<<endl;
+						locctr += 3;
+
 				} else if(opcode == "BYTE"){
 							string record;
 							if(operand[0] == 'X'){
 								record = operand.substr(2,operand.size()-3);
 								// cout << "The operand is"+operand+"The record is ......"+record;
-								locctr += (operand.size()-3)/2 ;
 							}else if(operand[0] == 'C'){
 								record = parse(operand);
-								locctr += operand.size()-3;	
 							}
 							object_code = record;
 							string s = operand.substr(2, size-3);
 							// cout << "19"<<endl;
-					
-						
+							write_the_text_record(text_record, object_code, out, locctr);
 
-						write_the_text_record(text_record, object_code, out, locctr);
+							if(operand[0] == 'X'){
+								locctr += (operand.size()-3)/2 ;
+							} else {
+								locctr += operand.size()-3;	
+							}
 
 						} else if(opcode == "RESB"){
 							locctr += stoi(operand);
