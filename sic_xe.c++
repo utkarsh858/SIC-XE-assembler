@@ -87,7 +87,8 @@ string trim(string word) {
 
 void initialize_OPTAB(vector<string>&  key, vector<string>&  fields, vector<string>& type){
 	cout << "OPTAB initialized succesfully" << endl;
-	fields.push_back("18");fields.push_back("58");fields.push_back("90");fields.push_back("40");fields.push_back("B4");fields.push_back("28");fields.push_back("88");fields.push_back("A0");fields.push_back("24");fields.push_back("64");fields.push_back("9C");fields.push_back("C4");fields.push_back("C0");fields.push_back("F4");fields.push_back("3C");fields.push_back("30");fields.push_back("34");fields.push_back("38");fields.push_back("48");fields.push_back("00");fields.push_back("68");fields.push_back("50");fields.push_back("70");fields.push_back("08");fields.push_back("6C");fields.push_back("74");fields.push_back("04");fields.push_back("D0");fields.push_back("20");fields.push_back("60");fields.push_back("98");fields.push_back("C8");fields.push_back("44");fields.push_back("D8");fields.push_back("AC");fields.push_back("4C");fields.push_back("A4");fields.push_back("A8");fields.push_back("F0");fields.push_back("EC");fields.push_back("0C");fields.push_back("78");fields.push_back("54");fields.push_back("80");fields.push_back("D4");fields.push_back("14");fields.push_back("7C");fields.push_back("E8");fields.push_back("84");fields.push_back("10");fields.push_back("1C");fields.push_back("5C");fields.push_back("94");fields.push_back("B0");fields.push_back("E0");fields.push_back("F8");fields.push_back("2C");fields.push_back("B8");fields.push_back("DC");
+	key.push_back("A");key.push_back("X");key.push_back("L");key.push_back("B");key.push_back("S");key.push_back("T");key.push_back("F");	fields.push_back("0");
+	fields.push_back("1");fields.push_back("2");fields.push_back("3");fields.push_back("4");fields.push_back("5");fields.push_back("6");	fields.push_back("18");fields.push_back("58");fields.push_back("90");fields.push_back("40");fields.push_back("B4");fields.push_back("28");fields.push_back("88");fields.push_back("A0");fields.push_back("24");fields.push_back("64");fields.push_back("9C");fields.push_back("C4");fields.push_back("C0");fields.push_back("F4");fields.push_back("3C");fields.push_back("30");fields.push_back("34");fields.push_back("38");fields.push_back("48");fields.push_back("00");fields.push_back("68");fields.push_back("50");fields.push_back("70");fields.push_back("08");fields.push_back("6C");fields.push_back("74");fields.push_back("04");fields.push_back("D0");fields.push_back("20");fields.push_back("60");fields.push_back("98");fields.push_back("C8");fields.push_back("44");fields.push_back("D8");fields.push_back("AC");fields.push_back("4C");fields.push_back("A4");fields.push_back("A8");fields.push_back("F0");fields.push_back("EC");fields.push_back("0C");fields.push_back("78");fields.push_back("54");fields.push_back("80");fields.push_back("D4");fields.push_back("14");fields.push_back("7C");fields.push_back("E8");fields.push_back("84");fields.push_back("10");fields.push_back("1C");fields.push_back("5C");fields.push_back("94");fields.push_back("B0");fields.push_back("E0");fields.push_back("F8");fields.push_back("2C");fields.push_back("B8");fields.push_back("DC");
 	key.push_back("ADD");key.push_back("ADDF");key.push_back("ADDR");key.push_back("AND");key.push_back("CLEAR");key.push_back("COMP");key.push_back("COMPF");key.push_back("COMPFR");key.push_back("DIV");key.push_back("DIVF");key.push_back("DIVR");key.push_back("FIX");key.push_back("FLOAT");key.push_back("HIO");key.push_back("J");key.push_back("JEQ");key.push_back("JGT");key.push_back("JLT");key.push_back("JSUB");key.push_back("LDA");key.push_back("LDB");key.push_back("LDCH");key.push_back("LDF");key.push_back("LDL");key.push_back("LDS");key.push_back("LDT");key.push_back("LDX");key.push_back("LPS");key.push_back("MUL");key.push_back("MULF");key.push_back("MULR");key.push_back("NORM");key.push_back("OR");key.push_back("RD");key.push_back("RMO");key.push_back("RSUB");key.push_back("SHIFTL");key.push_back("SHIFTR");key.push_back("SIO");key.push_back("SSK");key.push_back("STA");key.push_back("STB");key.push_back("STCH");key.push_back("STF");key.push_back("STI");key.push_back("STL");key.push_back("STS");key.push_back("STSW");key.push_back("STT");key.push_back("STX");key.push_back("SUB");key.push_back("SUBF");key.push_back("SUBR");key.push_back("SVC");key.push_back("TD");key.push_back("TIO");key.push_back("TIX");key.push_back("TIXR");key.push_back("WD");
 
 	type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("1");type.push_back("1");type.push_back("1");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("1");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("2");type.push_back("2");type.push_back("1");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("2");type.push_back("3");type.push_back("1");type.push_back("3");type.push_back("2");type.push_back("3");
@@ -150,6 +151,7 @@ string make_my_code(string opcode, string operand,long pc,string B){
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
 	int cutout = (extended)? 5:3;
 
+	if(format == "3"){
 	if(immediate && number_operand){
 		//immediate handling
 			stringstream ss;
@@ -162,19 +164,25 @@ string make_my_code(string opcode, string operand,long pc,string B){
 		pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
 			string operand_addr = *(SYMTAB_address.begin() + pos);
 
+			if(!extended){
 			// have to take complement also !!!!
 			operand_adr = to_string(stoi(operand_addr,nullptr,16)-stoi(pc,nullptr,16));
 			
 			//now have to check whether the displacement is less than 12 bits or not
 			bool use_base = false;
 			for(int i = 0; i < operand_addr.size() - 3 ;i++) if(operand_addr[i] != '0') {use_base = true; break;} 
-			
+			}
+
 			//if have to use base
 			if(use_base){
 				middle |= 4;
 				operand_addr = to_string(stoi(operand_addr,nullptr,16)-stoi(pc,nullptr,16));
-			} else middle |= 2;
+			} else if(extended){
+				middle |= 1;
+			}else middle |= 2;
 		
+			//cutout 
+			operand_addr = operand_addr.substr(operand_addr.size()-cutout ,cutout);
 			operand_addr = middle+operand_addr;
 			
 
@@ -184,6 +192,23 @@ string make_my_code(string opcode, string operand,long pc,string B){
 			ss.str("");
 			ss << hex << (stoi(ss.str()) | ni_tweak);
 			opcode_adr = ss.str().substr(size-2,2);
+		}
+	} else if(format == "2"){
+		if(operand.size() == 3)
+			{
+				int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(0,1)) - SYMTAB_name.begin();
+				string reg1 = *(pos + SYMTAB_address.begin());
+				int pos2 = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(2,1)) - SYMTAB_name.begin();
+				string reg2 = *(pos + SYMTAB_address.begin());
+				operand_addr = reg1 + reg2;
+				
+			}else{
+				int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(0,1)) - SYMTAB_name.begin();
+				string reg1 = *(pos + SYMTAB_address.begin());
+				operand_addr = reg1 + "0";
+			}
+	} else{
+		operand_addr = "0000";
 	}
 
 	return opcode_addr + operand_addr;
