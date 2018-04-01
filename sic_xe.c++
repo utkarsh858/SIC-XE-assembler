@@ -603,7 +603,8 @@ int main(int argc, char const *argv[])
 
 
 				if(find_opcode(opcode)){
-					if(text_record_printer = false){
+					if(text_record_printer == false){
+						cout << ")))))))))))))))))))))))))))))))))))))))))"<<endl;
 						length_text_record(text_record);
 							out << text_record << endl;
 							text_record = "T";
