@@ -105,8 +105,9 @@ void initialize_OPTAB(){
 void adjust_length(string& s, int l){
 	if(s.size()<l){
 		int size = s.size();
-		for (int i = 0; i <= l-size; ++i)
+		for (int i = 0; i < l-size; ++i){
 			s= "0"+s;
+		}
 	}
 	else s = s.substr(s.size()-l,l);
 
@@ -205,7 +206,6 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	
 	if(extended && !immediate){ 
 	modification_records.push_back(locctr);
-	cout << locctr <<endl;
 	}
 	if(format == "3"){
 	if(immediate && number_operand ){
@@ -214,7 +214,6 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			ss.str("");
 			ss << hex << stoi(operand);
 			operand_addr = ss.str();
-			
 			
 			adjust_length(operand_addr, cutout);
 
@@ -338,7 +337,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	}
 	// 
 	string res = (opcode_addr + operand_addr);
-	
+	cout << "opcode -> \t"<<opcode<< "\t"<<"operand ->\t"<<operand<< "\t"<< "object code -> \t" << res <<endl;
 	
 	return res;
 }
