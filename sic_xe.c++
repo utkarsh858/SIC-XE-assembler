@@ -85,13 +85,46 @@ string trim(string word) {
 	return word;
 }
 
-void initialize_OPTAB(vector<string>&  key, vector<string>&  fields, vector<string>& type){
-	cout << "OPTAB initialized succesfully" << endl;
-	key.push_back("A");key.push_back("X");key.push_back("L");key.push_back("B");key.push_back("S");key.push_back("T");key.push_back("F");	fields.push_back("0");
-	fields.push_back("1");fields.push_back("2");fields.push_back("3");fields.push_back("4");fields.push_back("5");fields.push_back("6");	fields.push_back("18");fields.push_back("58");fields.push_back("90");fields.push_back("40");fields.push_back("B4");fields.push_back("28");fields.push_back("88");fields.push_back("A0");fields.push_back("24");fields.push_back("64");fields.push_back("9C");fields.push_back("C4");fields.push_back("C0");fields.push_back("F4");fields.push_back("3C");fields.push_back("30");fields.push_back("34");fields.push_back("38");fields.push_back("48");fields.push_back("00");fields.push_back("68");fields.push_back("50");fields.push_back("70");fields.push_back("08");fields.push_back("6C");fields.push_back("74");fields.push_back("04");fields.push_back("D0");fields.push_back("20");fields.push_back("60");fields.push_back("98");fields.push_back("C8");fields.push_back("44");fields.push_back("D8");fields.push_back("AC");fields.push_back("4C");fields.push_back("A4");fields.push_back("A8");fields.push_back("F0");fields.push_back("EC");fields.push_back("0C");fields.push_back("78");fields.push_back("54");fields.push_back("80");fields.push_back("D4");fields.push_back("14");fields.push_back("7C");fields.push_back("E8");fields.push_back("84");fields.push_back("10");fields.push_back("1C");fields.push_back("5C");fields.push_back("94");fields.push_back("B0");fields.push_back("E0");fields.push_back("F8");fields.push_back("2C");fields.push_back("B8");fields.push_back("DC");
-	key.push_back("ADD");key.push_back("ADDF");key.push_back("ADDR");key.push_back("AND");key.push_back("CLEAR");key.push_back("COMP");key.push_back("COMPF");key.push_back("COMPFR");key.push_back("DIV");key.push_back("DIVF");key.push_back("DIVR");key.push_back("FIX");key.push_back("FLOAT");key.push_back("HIO");key.push_back("J");key.push_back("JEQ");key.push_back("JGT");key.push_back("JLT");key.push_back("JSUB");key.push_back("LDA");key.push_back("LDB");key.push_back("LDCH");key.push_back("LDF");key.push_back("LDL");key.push_back("LDS");key.push_back("LDT");key.push_back("LDX");key.push_back("LPS");key.push_back("MUL");key.push_back("MULF");key.push_back("MULR");key.push_back("NORM");key.push_back("OR");key.push_back("RD");key.push_back("RMO");key.push_back("RSUB");key.push_back("SHIFTL");key.push_back("SHIFTR");key.push_back("SIO");key.push_back("SSK");key.push_back("STA");key.push_back("STB");key.push_back("STCH");key.push_back("STF");key.push_back("STI");key.push_back("STL");key.push_back("STS");key.push_back("STSW");key.push_back("STT");key.push_back("STX");key.push_back("SUB");key.push_back("SUBF");key.push_back("SUBR");key.push_back("SVC");key.push_back("TD");key.push_back("TIO");key.push_back("TIX");key.push_back("TIXR");key.push_back("WD");
+void initialize_OPTAB(){
 
-	type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("1");type.push_back("1");type.push_back("1");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("1");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("3");type.push_back("2");type.push_back("2");type.push_back("1");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("3");type.push_back("2");type.push_back("2");type.push_back("3");type.push_back("1");type.push_back("3");type.push_back("2");type.push_back("3");
+	SYMTAB_name.push_back("A");	SYMTAB_name.push_back("X");	SYMTAB_name.push_back("L");	SYMTAB_name.push_back("B");	SYMTAB_name.push_back("S");	SYMTAB_name.push_back("T");	SYMTAB_name.push_back("F");
+	SYMTAB_address.push_back("0");SYMTAB_address.push_back("1");SYMTAB_address.push_back("2");SYMTAB_address.push_back("3");SYMTAB_address.push_back("4");SYMTAB_address.push_back("5");SYMTAB_address.push_back("6");
+	ifstream codes;
+	codes.open("code.txt") ;
+	string x;
+	while(getline(codes, x)){
+				//splitting the string
+		vector<string> args;
+
+		string delimiter = " ";
+		string token = x.substr(0, x.find(delimiter));
+		// cout << "1" <<endl;
+		size_t pos = 0;
+		while ((pos = x.find(delimiter)) != string::npos) {
+			token = x.substr(0, pos);
+			args.push_back(token);		    
+			x.erase(0, pos + delimiter.length());
+		}  
+		args.push_back(x.substr(0, x.size()));
+		// cout << "2" <<endl;
+
+		int size = args.size();
+		OPTAB_name.push_back(args[0]);
+		OPTAB_code.push_back(args[1]);
+		OPTAB_type.push_back(args[2]);
+	}
+
+	cout << "OPTAB initialized succesfully" << endl;
+	codes.close();
+}
+
+void adjust_length(string& s, int l){
+	if(s.size()<l)
+		for (int i = 0; i < l-s.size(); ++i)
+			s= "0"+s;
+	else s = s.substr(s.size()-l,l);
+
+	
 }
 
 string parse(string s){
@@ -109,15 +142,38 @@ string parse(string s){
 }
 
 bool find_opcode(string opcode){
+	cout <<"Finding opcode" <<endl;
 	if(opcode.find("+") != string::npos) opcode = opcode.substr(1,opcode.size()-1);
 	return (find(OPTAB_name.begin(), OPTAB_name.end(), opcode) != OPTAB_name.end());
 }
 
-string make_my_code(string opcode, string operand,long pc,string B){
+string find_diff(string a, string b){
+	try{
+		cout <<a<<" " <<b;
+	unsigned long i= (unsigned long)stoi(a,nullptr,16);
+	unsigned long j= (unsigned long)stoi(b,nullptr,16);
+	stringstream ss;
+	ss<< hex<<(i-j);
+	return ss.str();
+	}catch(out_of_range){
+		cout << "LOL";
+		exit(1);
+	}
+}
+
+
+string make_my_code(string opcode, string operand,long locctr,string B){
+	//special cases
+	if(opcode == "RSUB") return "4F0000";
+
+	cout <<"making the code"<<endl;
 	bool indirect = false;
 	bool immediate = false;
 	bool index = false;
 	bool extended = false;
+	cout << "pop1" <<endl;
+
+	cout << "pop2" <<endl;
 
 	string operand_addr;
 
@@ -137,12 +193,16 @@ string make_my_code(string opcode, string operand,long pc,string B){
 	if(opcode.find("+") != string::npos){
 		opcode = opcode.substr(1,opcode.size());
 		extended = true;
+		locctr++; //since only 3 has been increased originally
 	}
 
-
 	int pos = find(OPTAB_name.begin(), OPTAB_name.end(), opcode) - OPTAB_name.begin();
-	string opcode_addr = *(OPTAB_name.begin() + pos);
+	string opcode_addr = *(OPTAB_code.begin() + pos);
 	string format = *(pos+OPTAB_type.begin());
+
+	long pc = locctr + stoi(format);
+
+	cout << "pop3" <<endl;
 
 	//some variations defined for changing the value of n,i,x,b,p,e
 	int ni_tweak = 0 | (immediate) | (indirect << 1);
@@ -150,48 +210,67 @@ string make_my_code(string opcode, string operand,long pc,string B){
 	int middle = 0 | (index << 3) ;
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
 	int cutout = (extended)? 5:3;
+	stringstream ss;
+	cout << "pop4 " << "format : "<< format<<endl;
 
 	if(format == "3"){
-	if(immediate && number_operand){
+	if(immediate && number_operand ){
 		//immediate handling
-			stringstream ss;
-			ss << hex << stoi(operand);
-			operand_addr = ss.str().substr(ss.str().size()-cutout,cutout);
-			operand_addr = middle+operand_addr;
-	}
+			cout << "Hari bol!!" <<endl;
+			ss << hex << stoi(operand,nullptr,10);
+			operand_addr = ss.str();
+			adjust_length(operand_addr, cutout);
+			operand_addr = to_string(middle)+operand_addr;
+	} else 
 
-	if(indirect || direct || (immediate && !number_operand)){
+	// if(indirect || direct || (immediate && !number_operand))
+	{
 		pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
 			string operand_addr = *(SYMTAB_address.begin() + pos);
 
+			bool use_base = false;
 			if(!extended){
 			// have to take complement also !!!!
-			operand_adr = to_string(stoi(operand_addr,nullptr,16)-stoi(pc,nullptr,16));
+			ss.str("");ss << hex << pc;
+			cout <<"fighting maya 1"<<endl;
+			string disp = find_diff(operand_addr, ss.str());
 			
 			//now have to check whether the displacement is less than 12 bits or not
-			bool use_base = false;
-			for(int i = 0; i < operand_addr.size() - 3 ;i++) if(operand_addr[i] != '0') {use_base = true; break;} 
-			}
+			cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
+			
+			// for(int i = 0; i < operand_addr.size() - 3 ;i++) if(operand_addr[i] != '0') {
+			// 	cout<<operand_addr[0]; 	use_base = true; break;} 
+			// }
+			if(disp[0] == 'f') use_base = true;
+			cout <<"fighting maya 4"<<endl;
 
 			//if have to use base
 			if(use_base){
+				cout << "Have to use base." <<endl;
 				middle |= 4;
-				operand_addr = to_string(stoi(operand_addr,nullptr,16)-stoi(pc,nullptr,16));
+				operand_addr = find_diff(operand_addr, B);
 			} else if(extended){
 				middle |= 1;
-			}else middle |= 2;
-		
-			//cutout 
-			operand_addr = operand_addr.substr(operand_addr.size()-cutout ,cutout);
-			operand_addr = middle+operand_addr;
-			
+			}else 
+			{middle |= 2;
+			operand_addr = disp;
+			}
 
+			} //!extended end
+			//cutout 
+			cout << operand_addr <<endl;
+			adjust_length(operand_addr, cutout);			
+			operand_addr = to_string(middle)+operand_addr;
+			
+			cout <<"fighting maya 3   "<< opcode_addr<<endl;
+			cout << opcode_addr +"string";
 					//now for the opcode
 			ss.str("");
-			ss << dec << stoi(opcode_adr,nullptr,16);
-			ss.str("");
+			int p = stoi(opcode_addr,nullptr,16);
+			ss << dec << p <<endl;
 			ss << hex << (stoi(ss.str()) | ni_tweak);
-			opcode_adr = ss.str().substr(size-2,2);
+			opcode_addr = ss.str().substr(ss.str().size()-2,2);
+			cout << "fighting maya 5"<<endl;
 		}
 	} else if(format == "2"){
 		if(operand.size() == 3)
@@ -210,7 +289,8 @@ string make_my_code(string opcode, string operand,long pc,string B){
 	} else{
 		operand_addr = "0000";
 	}
-
+	cout << "pop5" <<endl;
+	cout << "Manufactured code-----"+opcode_addr + operand_addr;
 	return opcode_addr + operand_addr;
 }
 
@@ -223,14 +303,17 @@ int main(int argc, char const *argv[])
 
 	string x;
 	long locctr = 0;
+	long program_counter;
 	int starting_addr;
 	queue<string> commands;
 	long program_length ;
 	//Pass 1
 
 	string text_record;
+	string base_register;
 	bool text_record_printer = true;
-	initialize_OPTAB(OPTAB_name, OPTAB_code, OPTAB_type);
+
+	initialize_OPTAB();
 
 	string opcode = "";
 	string operand = "";
@@ -294,10 +377,14 @@ int main(int argc, char const *argv[])
 				
 
 				locctr = starting_addr;
+				base_register = starting_addr;
 				// cout << "5" << endl;
 
-			} ;
-
+			} else 
+			if(opcode == "BASE")
+				{
+					//ignore
+				} else
 			if (opcode == "END" ){  //if
 				
 				program_length = locctr;
@@ -373,7 +460,7 @@ int main(int argc, char const *argv[])
 	in.close();
 	program_length = locctr;
 	locctr = 0 ;
-	// cout << "11"<<endl;
+	cout << "11"<<endl;
 
 
 
@@ -388,7 +475,7 @@ int main(int argc, char const *argv[])
 		string token = x.substr(0, x.find(delimiter));
 		string opcode_num;
 		size_t pos = 0;
-		// cout << "12"<<endl;
+		cout << "12"<<endl;
 
 		while ((pos = x.find(delimiter)) != string::npos) {
 			token = x.substr(0, pos);
@@ -397,7 +484,7 @@ int main(int argc, char const *argv[])
 		}  
 		args.push_back(x.substr(0, x.size()));
 
-		// cout << "13"<<endl;
+		cout << "13"<<endl;
 
 		int size = args.size();
 
@@ -415,7 +502,7 @@ int main(int argc, char const *argv[])
 		}
 
 		cout << args[0];
-		// cout << "14"<<endl;
+		cout << "14"<<endl;
 
 
 		if(args[0][0] != '.'){  // comment handling
@@ -439,10 +526,10 @@ int main(int argc, char const *argv[])
 					for (int i = operand.size(); i < 6; ++i) text_record += "0";
 						text_record += operand;
 					text_record += "1E";
-					// cout << "15"<<endl;
+					cout << "15"<<endl;
 
 				}
-				// cout << "14.1" <<endl;
+				else
 				if(opcode == "END"){
 				// write last text record 
 					length_text_record(text_record);
@@ -453,15 +540,17 @@ int main(int argc, char const *argv[])
 					for (int i = program_start.size(); i < 6 ; ++i)
 						out << "0";
 					out << program_start << endl;
-					// cout << "16"<<endl;
+					cout << "16"<<endl;
 
-				}
-				// cout << "14.2" <<endl;
-
-
+				} 
+				else if(opcode == "BASE")
+				{
+					int pos = find(SYMTAB_name.begin() ,SYMTAB_name.end() , operand) - SYMTAB_name.begin();
+					base_register = *(pos + SYMTAB_address.begin()); 
+				} else
 				if(find_opcode(opcode)){
 					
-					write_the_text_record(text_record, make_my_code(opcode, operand), out, locctr);
+					write_the_text_record(text_record, make_my_code(opcode, operand, locctr, base_register), out, locctr);
 
 				} else if( opcode == "WORD"){
 				// constant to object code
@@ -476,7 +565,7 @@ int main(int argc, char const *argv[])
 						object_code += num_hex;
 	
 							write_the_text_record(text_record, object_code, out, locctr);
-							// cout << "18"<<endl;
+							cout << "18"<<endl;
 						locctr += 3;
 
 				} else if(opcode == "BYTE"){
@@ -505,10 +594,10 @@ int main(int argc, char const *argv[])
 							text_record_printer = false;
 							locctr += stoi(operand) * 3;
 						}
-			// cout << "14.4" <<endl;
+			cout << "14.4" <<endl;
 
 		}
-			// cout << "14.5" <<endl;
+			cout << "14.5" <<endl;
 
 		operand = "";
 		opcode = "";
