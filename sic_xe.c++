@@ -210,12 +210,13 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	// cout << "pop3" <<endl;
 
 	//some variations defined for changing the value of n,i,x,b,p,e
-	int ni_tweak = 0 | (immediate) | (indirect << 1);
+	int ni_tweak = 0 | (int)(immediate) | ((int)indirect << 1);
 	if(!immediate && !indirect) ni_tweak = 3;
-	int middle = 0 | (index << 3) ;
+	int middle = 0 | ((int)index << 3) ;
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
-	int cutout = (extended)? 5:3;
-	middle |= extended;
+	int cutout = ((int)extended)? 5:3;
+	middle |= (int)extended;
+	cout << middle;
 	// cout << "pop4 " << "format : "<< format<<endl;
 	cout << " ni_tweak: "<<ni_tweak;
 	cout << format <<endl;
@@ -223,15 +224,18 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	if(immediate && number_operand ){
 		//immediate handling
 			// cout << "Hari bol!!" <<endl;
-			ss << hex << stoi(operand,nullptr,10);
+			cout << operand << "iii"<<endl;
+			ss.str("");
+			ss << hex << stoi(operand);
 			operand_addr = ss.str();
+			cout << operand_addr << "ooo"<<endl;
 			adjust_length(operand_addr, cutout);
 			operand_addr = to_string(middle)+operand_addr;
 	} else 
 
 	// if(indirect || direct || (immediate && !number_operand))
 	{
-		pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
+			pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
 			 operand_addr = *(SYMTAB_address.begin() + pos);
 
 			bool use_base = false;
@@ -245,7 +249,13 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			//now have to check whether the displacement is less than 12 bits or not
 			// cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
 			
-			if(disp[0] == 'f') use_base = true;
+			if(disp.size() > 3)
+			{
+				cout <<"How???" <<endl;
+				//disp[disp.size()-4] .. disp[0]
+				if(disp[3] != 'f')
+				for(int i= disp.size()-4; i>=0;i--) if(disp[i]!='0') {use_base = true;break;}
+			}
 			// cout <<"fighting maya 4"<<endl;
 
 			//if have to use base
@@ -273,8 +283,9 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			ss << hex << (stoi(ss.str()) | ni_tweak);
 			opcode_addr = ss.str().substr(ss.str().size()-2,2);
 			// cout << "fighting maya 5"<<endl;
-
-			cout <<"OPerand addr ####"<< operand_addr <<endl;
+			if(opcode_addr.size() == 1) opcode_addr = "0"+opcode_addr;
+			cout << opcode_addr.size() ;
+			cout << " OPcode_addr "<< opcode_addr<<" OPerand addr "<< operand_addr <<endl;
 		}
 	} else if(format == "2"){
 		if(operand.size() == 3)
