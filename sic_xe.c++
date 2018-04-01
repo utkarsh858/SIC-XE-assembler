@@ -166,6 +166,8 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	//special cases
 	if(opcode == "RSUB") return "4F0000";
 
+	stringstream ss;
+
 	cout <<"making the code"<<endl;
 	bool indirect = false;
 	bool immediate = false;
@@ -200,6 +202,9 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	string opcode_addr = *(OPTAB_code.begin() + pos);
 	string format = *(pos+OPTAB_type.begin());
 
+	ss.str("");
+	ss << hex << locctr;
+	cout << "locctr "<<ss.str();
 	long pc = locctr + stoi(format);
 
 	// cout << "pop3" <<endl;
@@ -210,9 +215,8 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	int middle = 0 | (index << 3) ;
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
 	int cutout = (extended)? 5:3;
-	stringstream ss;
 	// cout << "pop4 " << "format : "<< format<<endl;
-	cout << "ni_tweak:"<<ni_tweak;
+	cout << " ni_tweak: "<<ni_tweak;
 	cout << format <<endl;
 	if(format == "3"){
 	if(immediate && number_operand ){
@@ -304,7 +308,7 @@ int main(int argc, char const *argv[])
 
 	string x;
 	long locctr = 0;
-	long program_counter;
+	
 	int starting_addr;
 	queue<string> commands;
 	long program_length ;
@@ -562,8 +566,14 @@ int main(int argc, char const *argv[])
 					base_register = *(pos + SYMTAB_address.begin()); 
 				} else
 				if(find_opcode(opcode)){
-					
+					cout << "PMT incharge"<<endl;
+					int pos = find(OPTAB_name.begin(), OPTAB_name.end(), opcode) - OPTAB_name.begin();
+					string format = *(pos+OPTAB_type.begin());
+
 					write_the_text_record(text_record, make_my_code(opcode, operand, locctr, base_register), out, locctr);
+					if(format == "3") locctr+=3;
+					else if(format == "2") locctr += 2;
+					else if(format == "1") locctr += 1;
 
 				} else if( opcode == "WORD"){
 				// constant to object code
