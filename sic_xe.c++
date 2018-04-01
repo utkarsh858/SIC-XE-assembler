@@ -24,19 +24,19 @@ void length_text_record(string& text_record){
 	
 	int size = (text_record.size()-9)/2;
 	stringstream ss;
-	cout << text_record<< "With size" << size<<endl;
+	
 	ss << hex << size;
 	string s = ss.str();
 	if(s.size() == 1) s = "0"+s;
 	text_record = text_record.substr(0,7)+s+text_record.substr(9,text_record.size()-9);
-	cout << "changed text record" << text_record<<endl;
+	
 }
 
 void write_the_text_record(string& text_record, string object_code, ofstream& out, long locctr){
-	cout << "Writing to text record\n" ;
+	
 	if(text_record.size() + object_code.size() > 69){
 		length_text_record(text_record);
-		cout << "=============================================================================" <<endl;
+		
 		transform(text_record.begin(), text_record.end(), text_record.begin(), ::toupper);
 		out << uppercase <<text_record <<endl;
 				//initialize_T(text_record);
@@ -52,7 +52,7 @@ void write_the_text_record(string& text_record, string object_code, ofstream& ou
 		text_record += "1E";
 
 	}
-	cout << "This -> " <<object_code << endl;
+	
 	text_record += object_code;
 }
 
@@ -111,7 +111,7 @@ void initialize_OPTAB(){
 
 		string delimiter = " ";
 		string token = x.substr(0, x.find(delimiter));
-		// cout << "1" <<endl;
+		// 
 		size_t pos = 0;
 		while ((pos = x.find(delimiter)) != string::npos) {
 			token = x.substr(0, pos);
@@ -119,7 +119,7 @@ void initialize_OPTAB(){
 			x.erase(0, pos + delimiter.length());
 		}  
 		args.push_back(x.substr(0, x.size()));
-		// cout << "2" <<endl;
+		// 
 
 		int size = args.size();
 		OPTAB_name.push_back(args[0]);
@@ -127,7 +127,7 @@ void initialize_OPTAB(){
 		OPTAB_type.push_back(args[2]);
 	}
 
-	// cout << "OPTAB initialized succesfully" << endl;
+	// 
 	codes.close();
 }
 
@@ -141,7 +141,7 @@ void adjust_length(string& s, int l){
 }
 
 string parse(string s){
-	// cout << "given string is :: " << s;
+	// 
 	string res;
 	stringstream ss;
 	for (int i = 2; i < s.size()-1; ++i)
@@ -150,26 +150,26 @@ string parse(string s){
 		res += ss.str();
 		ss.str("");
 	}
-	// cout <<  "Parsed string is :: "+res+"----";
+	// 
 	return res;
 }
 
 bool find_opcode(string opcode){
-	// cout <<"Finding opcode" <<endl;
+	// 
 	if(opcode.find("+") != string::npos) opcode = opcode.substr(1,opcode.size()-1);
 	return (find(OPTAB_name.begin(), OPTAB_name.end(), opcode) != OPTAB_name.end());
 }
 
 string find_diff(string a, string b){
 	try{
-		// cout <<a<<" " <<b;
+		// 
 	unsigned long i= (unsigned long)stoi(a,nullptr,16);
 	unsigned long j= (unsigned long)stoi(b,nullptr,16);
 	stringstream ss;
 	ss<< hex<<(i-j);
 	return ss.str();
 	}catch(out_of_range){
-		cout << "LOL";
+		
 		exit(1);
 	}
 }
@@ -181,14 +181,14 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 
 	stringstream ss;
 
-	cout <<"making the code"<<endl;
+	
 	bool indirect = false;
 	bool immediate = false;
 	bool index = false;
 	bool extended = false;
-	// cout << "pop1" <<endl;
+	// 
 
-	// cout << "pop2" <<endl;
+	// 
 
 	string operand_addr;
 
@@ -217,10 +217,10 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 
 	ss.str("");
 	ss << hex << locctr;
-	cout << "locctr "<<ss.str();
+	
 	long pc = locctr + stoi(format);
 
-	// cout << "pop3" <<endl;
+	// 
 
 	//some variations defined for changing the value of n,i,x,b,p,e
 	int ni_tweak = 0 | (int)(immediate) | ((int)indirect << 1);
@@ -229,19 +229,19 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
 	int cutout = (extended)? 5:3;
 	middle |= (int)extended;
-	cout << middle;
-	// cout << "pop4 " << "format : "<< format<<endl;
-	cout << " ni_tweak: "<<ni_tweak;
-	cout << " format " << format <<endl;
+	
+	// 
+	
+	
 	if(format == "3"){
 	if(immediate && number_operand ){
 		//immediate handling
-			// cout << "Hari bol!!" <<endl;
+			// 
 			ss.str("");
 			ss << hex << stoi(operand);
 			operand_addr = ss.str();
-			cout << operand_addr << "iii"<<endl;
-			cout << middle << "ooo"<<endl;
+			
+			
 			adjust_length(operand_addr, cutout);
 
 			ss.str("");
@@ -258,12 +258,15 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			ss << hex << temp;
 			opcode_addr = ss.str();
 			adjust_length(opcode_addr,2);
-			cout << "Shout!"+opcode_addr<<endl;
+			
 
 	} else 
 
 	// if(indirect || direct || (immediate && !number_operand))
 	{
+			if(find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) == SYMTAB_name.end()){
+				OPCODE_errors.push_back(operand + "<- Symbol not found!");
+				return "ERROR";}
 			pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
 			operand_addr = *(SYMTAB_address.begin() + pos);
 
@@ -271,34 +274,34 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			if(!extended){
 			// have to take complement also !!!!
 			ss.str("");ss << hex << pc;
-			// cout <<"fighting maya 1"<<endl;
-			cout << "label addr"<<operand_addr << "pc"<<ss.str()<<endl;
+			// 
+			
 			string disp = find_diff(operand_addr, ss.str());
 			
 			//now have to check whether the displacement is less than 12 bits or not
-			// cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
-			cout << "displacement is" << disp <<endl;
+			// 
+			
 			if(disp.size() > 3)
 			{
-				cout <<"How???" <<endl;
+				
 				//disp[disp.size()-4] .. disp[0]
 				if(disp[0] != 'f'){
-					cout << "positive checking";
+					
 					for(int i= disp.size()-4; i>=0;i--) if(disp[i]!='0') {use_base = true;break;}
 				}
 				else{
-					cout << "complement checking";
+					
 					for(int i= disp.size()-4; i>=0;i--) if(disp[i]!='f') {use_base = true;break;}
 				}
 
 			}
 			adjust_length(disp, 3);
-			// cout <<"fighting maya 4"<<endl;
+			// 
 
 			//if have to use base
-			cout << use_base <<endl;
+			
 			if(use_base){
-				// cout << "Have to use base." <<endl;
+				// 
 				middle |= 4;
 				operand_addr = find_diff(operand_addr, B);
 			} else 
@@ -309,13 +312,13 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			} //!extended end
 			//cutout 
 			adjust_length(operand_addr, cutout);
-			cout <<"middle"<<middle<<endl;		
+			
 			ss.str("");
 			ss << hex << middle;	
 			operand_addr = ss.str()+operand_addr;
 			
-			// cout <<"fighting maya 3   "<< opcode_addr<<endl;
-			// cout << opcode_addr +"string";
+			// 
+			// 
 					//now for the opcode
 			ss.str("");
 			int p = stoi(opcode_addr,nullptr,16);
@@ -325,20 +328,33 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			ss << hex << temp;
 			opcode_addr = ss.str();
 			if(opcode_addr.size() == 1) opcode_addr = "0"+opcode_addr;
-			// cout << "fighting maya 5"<<endl;
-			cout << opcode_addr.size() ;
-			cout << " OPcode_addr "<< opcode_addr<<" OPerand addr "<< operand_addr <<endl;
+			// 
+			
+			
 		}
 	} else if(format == "2"){
 		if(operand.size() == 3)
 			{
+				if(find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(0,1)) == SYMTAB_name.end()){
+					OPCODE_errors.push_back(operand.substr(0,1)+"<- Invalid Register");
+					return "ERROR";
+				}
+				if(find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(2,1)) == SYMTAB_name.end()){
+					OPCODE_errors.push_back(operand.substr(2,1)+"<- Invalid Register");
+					return "ERROR";
+				}
 				int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(0,1)) - SYMTAB_name.begin();
 				string reg1 = *(pos + SYMTAB_address.begin());
 				int pos2 = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(2,1)) - SYMTAB_name.begin();
 				string reg2 = *(pos + SYMTAB_address.begin());
 				operand_addr = reg1 + reg2;
 				
-			}else{
+			}else{ //operand size 2
+				if(find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(0,1)) == SYMTAB_name.end()){
+					OPCODE_errors.push_back(operand.substr(0,1)+"<- Invalid Register");
+					return "ERROR";
+				}
+
 				int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand.substr(0,1)) - SYMTAB_name.begin();
 				string reg1 = *(pos + SYMTAB_address.begin());
 				operand_addr = reg1 + "0";
@@ -346,9 +362,9 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	} else{
 		operand_addr = "0000";
 	}
-	// cout << "pop5" <<endl;
+	// 
 	string res = (opcode_addr + operand_addr);
-	cout << "Manufactured code-----"+res;
+	
 	
 	return res;
 }
@@ -380,7 +396,7 @@ int main(int argc, char const *argv[])
 
 	//Pass 1
 	while (getline(in, x) ){
-		// cout << "Got this::: " << x;
+		// 
 		if(x != "")
 			commands.push(x);
 		else 
@@ -404,11 +420,14 @@ int main(int argc, char const *argv[])
 		} else if(size == 1){
 			opcode = args[0];
 
+		}else {
+			OPCODE_errors.push_back("Incorrect number of words in statement!"+x);
+			continue;
 		}
 
-			cout << label << "|"<< opcode << "|"<< operand <<endl;
-			// cout << "4" << endl;
-			cout << locctr << endl;
+			
+			// 
+			
 		if(args[0][0] != '.' && (args.size() != 0)){  // comment handling
 			if(opcode == "START"){ // strting address
 
@@ -417,7 +436,7 @@ int main(int argc, char const *argv[])
 
 				locctr = starting_addr;
 				base_register = starting_addr;
-				// cout << "5" << endl;
+				// 
 
 			} else 
 			if(opcode == "BASE")
@@ -427,7 +446,7 @@ int main(int argc, char const *argv[])
 			if (opcode == "END" ){  //if
 				
 				program_length = locctr;
-				// cout << "6" << endl;
+				// 
 
 			} // end opcode
 			else {	
@@ -435,7 +454,7 @@ int main(int argc, char const *argv[])
 
 				if(label != ""){ //if LABEL field has a value
 					// searching for the label
-					// cout << "LABEL found" << endl;
+					// 
 					if((pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), label)) != SYMTAB_name.end()){
 						//found. set error flag
 						OPCODE_errors.push_back("OOPs duplicate label -> "+*pos);
@@ -448,12 +467,12 @@ int main(int argc, char const *argv[])
 						SYMTAB_address.push_back(ss.str());
 						SYMTAB_error_flag.push_back("");
 					}
-					// cout << "7"<<endl;
+					// 
 
 				}
 
 				if(find_opcode(opcode)){ // searching for optab
-									// cout << "mast\n";
+									// 
  
 					if(opcode.find("+") != string::npos){
 						opcode = opcode.substr(1,opcode.size());
@@ -480,35 +499,35 @@ int main(int argc, char const *argv[])
 					else
 						locctr += (operand.size()-3);
 				} else {
-					OPCODE_errors.push_back(opcode+" Invalid OPCODE");
+					OPCODE_errors.push_back(opcode+"<- Invalid OPCODE");
 				}
 
 			}
-			// cout << "9" <<endl;
+			// 
 
 		}
 
 	operand = "";
 	opcode = "";
 	label = "";
-	// cout << "10"<<endl;
+	// 
 
 	}//Pass 1 end
 
 
 
-	cout << "Pass 1 finished!\n";
-	cout << "SYMTAB has been maufactured as follows:\n";
+	
+	
 	for (vector<string>::iterator i = SYMTAB_name.begin(); i < SYMTAB_name.end(); ++i)
 	{
 		int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), *i) - SYMTAB_name.begin();
-		cout << *(SYMTAB_name.begin()+pos);
-		cout << "\t" << *(SYMTAB_address.begin()+pos) << endl;
+		
+		
 	}
 	in.close();
 	program_length = locctr;
 	locctr = 0 ;
-	// cout << "11"<<endl;
+	// 
 
 
 
@@ -535,10 +554,12 @@ int main(int argc, char const *argv[])
 		} else if(size == 1){
 			opcode = args[0];
 
+		} else {
+			continue;
 		}
 
-		cout << args[0];
-		// cout << "14"<<endl;
+		
+		// 
 
 
 		if(args[0][0] != '.'){  // comment handling
@@ -565,7 +586,7 @@ int main(int argc, char const *argv[])
 					for (int i = operand.size(); i < 6; ++i) text_record += "0";
 						text_record += operand;
 					text_record += "1E";
-					cout << "15"<<endl;
+					
 
 				}
 				else
@@ -579,20 +600,20 @@ int main(int argc, char const *argv[])
 					for (int i = program_start.size(); i < 6 ; ++i)
 						out << "0";
 					out << uppercase<<program_start << endl;
-					// cout << "16"<<endl;
+					// 
 
 				} 
 				else if(opcode == "BASE")
 				{
 					int pos = find(SYMTAB_name.begin() ,SYMTAB_name.end() , operand) - SYMTAB_name.begin();
 					base_register = *(pos + SYMTAB_address.begin()); 
-					cout << "BASE set ! " << base_register <<endl;
+					
 				} else
 
 
 				if(find_opcode(opcode)){
 					if(text_record_printer == false){
-						cout << ")))))))))))))))))))))))))))))))))))))))))"<<endl;
+						
 						length_text_record(text_record);
 		transform(text_record.begin(), text_record.end(), text_record.begin(), ::toupper);
 
@@ -610,7 +631,7 @@ int main(int argc, char const *argv[])
 							text_record_printer = true;
 					}
 
-					cout << "PMT incharge"<<endl;
+					
 					string query = (opcode.find("+")!= string::npos)?opcode.substr(1,opcode.size()-1):opcode;
 					int pos = find(OPTAB_name.begin(), OPTAB_name.end(), query) - OPTAB_name.begin();
 					string format = *(pos+OPTAB_type.begin());
@@ -636,20 +657,20 @@ int main(int argc, char const *argv[])
 						object_code += num_hex;
 	
 							write_the_text_record(text_record, object_code, out, locctr);
-							cout << "18"<<endl;
+							
 						locctr += 3;
 
 				} else if(opcode == "BYTE"){
 							string record;
 							if(operand[0] == 'X'){
 								record = operand.substr(2,operand.size()-3);
-								// cout << "The operand is"+operand+"The record is ......"+record;
+								// 
 							}else if(operand[0] == 'C'){
 								record = parse(operand);
 							}
 							object_code = record;
 							string s = operand.substr(2, size-3);
-							// cout << "19"<<endl;
+							// 
 							write_the_text_record(text_record, object_code, out, locctr);
 
 							if(operand[0] == 'X'){
@@ -665,17 +686,25 @@ int main(int argc, char const *argv[])
 							text_record_printer = false;
 							locctr += stoi(operand) * 3;
 						}
-			// cout << "14.4" <<endl;
+			// 
 
 		}
-			// cout << "14.5" <<endl;
+			// 
 
 		operand = "";
 		opcode = "";
 		label = "";
 	}
 
-	
+
+	// duplicate label, invalid opcode, invalid register, undefined label, incorrect no. of words in statements
+	if(OPCODE_errors.size() > 0)
+	cout << "\tERRORs are always welcome!\n";
+	for (std::vector<string>::iterator i = OPCODE_errors.begin(); i != OPCODE_errors.end(); ++i)
+	{
+		cout << *i <<endl;
+	}
+
 out.close();
 return 0;
 }
