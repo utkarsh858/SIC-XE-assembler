@@ -215,6 +215,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	int middle = 0 | (index << 3) ;
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
 	int cutout = (extended)? 5:3;
+	middle |= extended;
 	// cout << "pop4 " << "format : "<< format<<endl;
 	cout << " ni_tweak: "<<ni_tweak;
 	cout << format <<endl;
@@ -252,9 +253,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 				// cout << "Have to use base." <<endl;
 				middle |= 4;
 				operand_addr = find_diff(operand_addr, B);
-			} else if(extended){
-				middle |= 1;
-			}else 
+			} else 
 			{middle |= 2;
 			operand_addr = disp;
 			}
