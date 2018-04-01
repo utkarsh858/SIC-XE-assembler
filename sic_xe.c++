@@ -114,7 +114,7 @@ void initialize_OPTAB(){
 		OPTAB_type.push_back(args[2]);
 	}
 
-	cout << "OPTAB initialized succesfully" << endl;
+	// cout << "OPTAB initialized succesfully" << endl;
 	codes.close();
 }
 
@@ -128,7 +128,7 @@ void adjust_length(string& s, int l){
 }
 
 string parse(string s){
-	cout << "given string is :: " << s;
+	// cout << "given string is :: " << s;
 	string res;
 	stringstream ss;
 	for (int i = 2; i < s.size()-1; ++i)
@@ -137,19 +137,19 @@ string parse(string s){
 		res += ss.str();
 		ss.str("");
 	}
-	cout <<  "Parsed string is :: "+res+"----";
+	// cout <<  "Parsed string is :: "+res+"----";
 	return res;
 }
 
 bool find_opcode(string opcode){
-	cout <<"Finding opcode" <<endl;
+	// cout <<"Finding opcode" <<endl;
 	if(opcode.find("+") != string::npos) opcode = opcode.substr(1,opcode.size()-1);
 	return (find(OPTAB_name.begin(), OPTAB_name.end(), opcode) != OPTAB_name.end());
 }
 
 string find_diff(string a, string b){
 	try{
-		cout <<a<<" " <<b;
+		// cout <<a<<" " <<b;
 	unsigned long i= (unsigned long)stoi(a,nullptr,16);
 	unsigned long j= (unsigned long)stoi(b,nullptr,16);
 	stringstream ss;
@@ -171,9 +171,9 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	bool immediate = false;
 	bool index = false;
 	bool extended = false;
-	cout << "pop1" <<endl;
+	// cout << "pop1" <<endl;
 
-	cout << "pop2" <<endl;
+	// cout << "pop2" <<endl;
 
 	string operand_addr;
 
@@ -202,7 +202,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 
 	long pc = locctr + stoi(format);
 
-	cout << "pop3" <<endl;
+	// cout << "pop3" <<endl;
 
 	//some variations defined for changing the value of n,i,x,b,p,e
 	int ni_tweak = 0 | (immediate) | (indirect << 1);
@@ -211,12 +211,13 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
 	int cutout = (extended)? 5:3;
 	stringstream ss;
-	cout << "pop4 " << "format : "<< format<<endl;
-
+	// cout << "pop4 " << "format : "<< format<<endl;
+	cout << "ni_tweak:"<<ni_tweak;
+	cout << format <<endl;
 	if(format == "3"){
 	if(immediate && number_operand ){
 		//immediate handling
-			cout << "Hari bol!!" <<endl;
+			// cout << "Hari bol!!" <<endl;
 			ss << hex << stoi(operand,nullptr,10);
 			operand_addr = ss.str();
 			adjust_length(operand_addr, cutout);
@@ -226,27 +227,25 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	// if(indirect || direct || (immediate && !number_operand))
 	{
 		pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
-			string operand_addr = *(SYMTAB_address.begin() + pos);
+			 operand_addr = *(SYMTAB_address.begin() + pos);
 
 			bool use_base = false;
 			if(!extended){
 			// have to take complement also !!!!
 			ss.str("");ss << hex << pc;
-			cout <<"fighting maya 1"<<endl;
+			// cout <<"fighting maya 1"<<endl;
+			cout << "label addr"<<operand_addr << "pc"<<ss.str()<<endl;
 			string disp = find_diff(operand_addr, ss.str());
 			
 			//now have to check whether the displacement is less than 12 bits or not
-			cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
+			// cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
 			
-			// for(int i = 0; i < operand_addr.size() - 3 ;i++) if(operand_addr[i] != '0') {
-			// 	cout<<operand_addr[0]; 	use_base = true; break;} 
-			// }
 			if(disp[0] == 'f') use_base = true;
-			cout <<"fighting maya 4"<<endl;
+			// cout <<"fighting maya 4"<<endl;
 
 			//if have to use base
 			if(use_base){
-				cout << "Have to use base." <<endl;
+				// cout << "Have to use base." <<endl;
 				middle |= 4;
 				operand_addr = find_diff(operand_addr, B);
 			} else if(extended){
@@ -258,19 +257,21 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 
 			} //!extended end
 			//cutout 
-			cout << operand_addr <<endl;
-			adjust_length(operand_addr, cutout);			
+			adjust_length(operand_addr, cutout);
+			cout <<"middle"<<middle<<endl;			
 			operand_addr = to_string(middle)+operand_addr;
 			
-			cout <<"fighting maya 3   "<< opcode_addr<<endl;
-			cout << opcode_addr +"string";
+			// cout <<"fighting maya 3   "<< opcode_addr<<endl;
+			// cout << opcode_addr +"string";
 					//now for the opcode
 			ss.str("");
 			int p = stoi(opcode_addr,nullptr,16);
 			ss << dec << p <<endl;
 			ss << hex << (stoi(ss.str()) | ni_tweak);
 			opcode_addr = ss.str().substr(ss.str().size()-2,2);
-			cout << "fighting maya 5"<<endl;
+			// cout << "fighting maya 5"<<endl;
+
+			cout <<"OPerand addr ####"<< operand_addr <<endl;
 		}
 	} else if(format == "2"){
 		if(operand.size() == 3)
@@ -289,9 +290,9 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	} else{
 		operand_addr = "0000";
 	}
-	cout << "pop5" <<endl;
-	cout << "Manufactured code-----"+opcode_addr + operand_addr;
-	return opcode_addr + operand_addr;
+	// cout << "pop5" <<endl;
+	cout << "Manufactured code-----"+operand_addr;
+	return (opcode_addr + operand_addr);
 }
 
 int main(int argc, char const *argv[])
@@ -321,7 +322,7 @@ int main(int argc, char const *argv[])
 
 	//Pass 1
 	while (getline(in, x)){
-		cout << "Got this::: " << x;
+		// cout << "Got this::: " << x;
 		if(x != "")
 			commands.push(x);
 		else 
@@ -342,11 +343,6 @@ int main(int argc, char const *argv[])
 		// cout << "2" <<endl;
 
 		int size = args.size();
-
-		for (int i = 0; i < args.size(); ++i)
-		{
-			cout << "args:" << i <<":" <<args[i] <<endl;
-		}
 
 		if(size == 3){
 			opcode = args[1];
@@ -369,7 +365,7 @@ int main(int argc, char const *argv[])
 			// args[0] = trim(args[0]);
 			cout << label << "|"<< opcode << "|"<< operand <<endl;
 			// cout << "4" << endl;
-
+			cout << locctr << endl;
 		if(args[0][0] != '.'){  // comment handling
 			if(opcode == "START"){ // strting address
 
@@ -391,7 +387,7 @@ int main(int argc, char const *argv[])
 				// cout << "6" << endl;
 
 			} // end opcode
-			else {
+			else {	
 				vector<string>::iterator pos;
 
 				if(label != ""){ //if LABEL field has a value
@@ -403,7 +399,7 @@ int main(int argc, char const *argv[])
 					} else {
 						//not found
 						SYMTAB_name.push_back(label);
-						cout << locctr << endl;
+						
 						stringstream ss ;
 						ss << hex << locctr;
 						SYMTAB_address.push_back(ss.str());
@@ -413,9 +409,26 @@ int main(int argc, char const *argv[])
 
 				}
 
-				if(find(OPTAB_name.begin(), OPTAB_name.end(), opcode) != OPTAB_name.end()){ // searching for optab
-					// cout << "mast\n";
-					locctr += 3;   //have to see which type of opcode
+				if(find_opcode(opcode)){ // searching for optab
+									// cout << "mast\n";
+					if(operand.find("@") != string::npos){ //indirect
+						operand = operand.substr(1,operand.size());
+					} else if(operand.find("#") != string::npos){// immediate
+						operand = operand.substr(1,operand.size());
+					} else { //direct
+						if(operand.find(",X") != string::npos){
+							operand = operand.substr(0,operand.size()-2);
+						}
+					} 
+					if(opcode.find("+") != string::npos){
+						opcode = opcode.substr(1,opcode.size());
+						locctr++; //since only 3 has been increased originally
+					}
+
+					int pos = find(OPTAB_name.begin(), OPTAB_name.end(), opcode) - OPTAB_name.begin();
+					string format = *(pos+OPTAB_type.begin());
+
+					locctr += stoi(format);   //have to see which type of opcode
 				} else if(opcode == "WORD"){
 					locctr += 3;
 
@@ -460,7 +473,7 @@ int main(int argc, char const *argv[])
 	in.close();
 	program_length = locctr;
 	locctr = 0 ;
-	cout << "11"<<endl;
+	// cout << "11"<<endl;
 
 
 
@@ -475,7 +488,7 @@ int main(int argc, char const *argv[])
 		string token = x.substr(0, x.find(delimiter));
 		string opcode_num;
 		size_t pos = 0;
-		cout << "12"<<endl;
+		// cout << "12"<<endl;
 
 		while ((pos = x.find(delimiter)) != string::npos) {
 			token = x.substr(0, pos);
@@ -484,7 +497,7 @@ int main(int argc, char const *argv[])
 		}  
 		args.push_back(x.substr(0, x.size()));
 
-		cout << "13"<<endl;
+		// cout << "13"<<endl;
 
 		int size = args.size();
 
@@ -502,7 +515,7 @@ int main(int argc, char const *argv[])
 		}
 
 		cout << args[0];
-		cout << "14"<<endl;
+		// cout << "14"<<endl;
 
 
 		if(args[0][0] != '.'){  // comment handling
@@ -540,7 +553,7 @@ int main(int argc, char const *argv[])
 					for (int i = program_start.size(); i < 6 ; ++i)
 						out << "0";
 					out << program_start << endl;
-					cout << "16"<<endl;
+					// cout << "16"<<endl;
 
 				} 
 				else if(opcode == "BASE")
@@ -594,10 +607,10 @@ int main(int argc, char const *argv[])
 							text_record_printer = false;
 							locctr += stoi(operand) * 3;
 						}
-			cout << "14.4" <<endl;
+			// cout << "14.4" <<endl;
 
 		}
-			cout << "14.5" <<endl;
+			// cout << "14.5" <<endl;
 
 		operand = "";
 		opcode = "";
