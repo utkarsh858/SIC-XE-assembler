@@ -36,6 +36,7 @@ void write_the_text_record(string& text_record, string object_code, ofstream& ou
 	cout << "Writing to text record\n" ;
 	if(text_record.size() + object_code.size() > 69){
 		length_text_record(text_record);
+		cout << "=============================================================================" <<endl;
 		out << text_record <<endl;
 				//initialize_T(text_record);
 		text_record = "T";
@@ -120,7 +121,7 @@ void initialize_OPTAB(){
 
 void adjust_length(string& s, int l){
 	if(s.size()<l)
-		for (int i = 0; i < l-s.size(); ++i)
+		for (int i = 0; i <= l-s.size(); ++i)
 			s= "0"+s;
 	else s = s.substr(s.size()-l,l);
 
@@ -219,26 +220,28 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	cout << middle;
 	// cout << "pop4 " << "format : "<< format<<endl;
 	cout << " ni_tweak: "<<ni_tweak;
-	cout << format <<endl;
+	cout << " format " << format <<endl;
 	if(format == "3"){
 	if(immediate && number_operand ){
 		//immediate handling
 			// cout << "Hari bol!!" <<endl;
-			cout << operand << "iii"<<endl;
 			ss.str("");
 			ss << hex << stoi(operand);
 			operand_addr = ss.str();
-			cout << operand_addr << "ooo"<<endl;
+			cout << operand_addr << "iii"<<endl;
+			cout << middle << "ooo"<<endl;
 			adjust_length(operand_addr, cutout);
 			operand_addr = to_string(middle)+operand_addr;
-
 			//opcode adjustment
 			ss.str("");
 			int p = stoi(opcode_addr,nullptr,16);
 			ss << dec << p <<endl;
-			ss << hex << (stoi(ss.str()) | ni_tweak);
-			opcode_addr = ss.str().substr(ss.str().size()-2,2);
-			if(opcode_addr.size() == 1) opcode_addr = "0"+opcode_addr;
+			long temp = (stoi(ss.str()) | ni_tweak);
+			ss.str("");
+			ss << hex << temp;
+			opcode_addr = ss.str();
+			adjust_length(opcode_addr,2);
+			cout << "Shout!"+opcode_addr<<endl;
 
 	} else 
 
@@ -289,10 +292,12 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			ss.str("");
 			int p = stoi(opcode_addr,nullptr,16);
 			ss << dec << p <<endl;
-			ss << hex << (stoi(ss.str()) | ni_tweak);
-			opcode_addr = ss.str().substr(ss.str().size()-2,2);
-			// cout << "fighting maya 5"<<endl;
+			long temp = (stoi(ss.str()) | ni_tweak);
+			ss.str("");
+			ss << hex << temp;
+			opcode_addr = ss.str();
 			if(opcode_addr.size() == 1) opcode_addr = "0"+opcode_addr;
+			// cout << "fighting maya 5"<<endl;
 			cout << opcode_addr.size() ;
 			cout << " OPcode_addr "<< opcode_addr<<" OPerand addr "<< operand_addr <<endl;
 		}
@@ -314,8 +319,10 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 		operand_addr = "0000";
 	}
 	// cout << "pop5" <<endl;
-	cout << "Manufactured code-----"+operand_addr;
-	return (opcode_addr + operand_addr);
+	string res = (opcode_addr + operand_addr);
+	cout << "Manufactured code-----"+res;
+	
+	return res;
 }
 
 int main(int argc, char const *argv[])
@@ -579,16 +586,34 @@ int main(int argc, char const *argv[])
 
 
 				if(find_opcode(opcode)){
+					if(text_record_printer = false){
+						length_text_record(text_record);
+							out << text_record << endl;
+							text_record = "T";
+							stringstream ss;
+							ss << hex << locctr;
+							string counter = ss.str();
+							for (int i = 0; i < 6-counter.size(); ++i)
+							{
+								text_record += "0";
+							}
+							text_record += counter;
+							text_record += "1E";
+							text_record_printer = true;
+					}
+
 					cout << "PMT incharge"<<endl;
 					string query = (opcode.find("+")!= string::npos)?opcode.substr(1,opcode.size()-1):opcode;
 					int pos = find(OPTAB_name.begin(), OPTAB_name.end(), query) - OPTAB_name.begin();
 					string format = *(pos+OPTAB_type.begin());
-
-					write_the_text_record(text_record, make_my_code(opcode, operand, locctr, base_register), out, locctr);
+					string code = make_my_code(opcode, operand, locctr, base_register);
+					write_the_text_record(text_record ,code , out, locctr);
 					if(opcode.find("+") != string::npos) locctr++;
 					if(format == "3") locctr+=3;
 					else if(format == "2") locctr += 2;
 					else if(format == "1") locctr += 1;
+
+
 
 				} else if( opcode == "WORD"){
 				// constant to object code
