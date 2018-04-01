@@ -415,15 +415,7 @@ int main(int argc, char const *argv[])
 
 				if(find_opcode(opcode)){ // searching for optab
 									// cout << "mast\n";
-					if(operand.find("@") != string::npos){ //indirect
-						operand = operand.substr(1,operand.size());
-					} else if(operand.find("#") != string::npos){// immediate
-						operand = operand.substr(1,operand.size());
-					} else { //direct
-						if(operand.find(",X") != string::npos){
-							operand = operand.substr(0,operand.size()-2);
-						}
-					} 
+ 
 					if(opcode.find("+") != string::npos){
 						opcode = opcode.substr(1,opcode.size());
 						locctr++; //since only 3 has been increased originally
@@ -565,12 +557,16 @@ int main(int argc, char const *argv[])
 					int pos = find(SYMTAB_name.begin() ,SYMTAB_name.end() , operand) - SYMTAB_name.begin();
 					base_register = *(pos + SYMTAB_address.begin()); 
 				} else
+
+
 				if(find_opcode(opcode)){
 					cout << "PMT incharge"<<endl;
-					int pos = find(OPTAB_name.begin(), OPTAB_name.end(), opcode) - OPTAB_name.begin();
+					string query = (opcode.find("+")!= string::npos)?opcode.substr(1,opcode.size()-1):opcode;
+					int pos = find(OPTAB_name.begin(), OPTAB_name.end(), query) - OPTAB_name.begin();
 					string format = *(pos+OPTAB_type.begin());
 
 					write_the_text_record(text_record, make_my_code(opcode, operand, locctr, base_register), out, locctr);
+					if(opcode.find("+") != string::npos) locctr++;
 					if(format == "3") locctr+=3;
 					else if(format == "2") locctr += 2;
 					else if(format == "1") locctr += 1;
