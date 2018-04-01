@@ -231,7 +231,12 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			cout << operand_addr << "iii"<<endl;
 			cout << middle << "ooo"<<endl;
 			adjust_length(operand_addr, cutout);
-			operand_addr = to_string(middle)+operand_addr;
+
+			ss.str("");
+			ss << hex << middle;
+
+			operand_addr = ss.str()+operand_addr;
+			
 			//opcode adjustment
 			ss.str("");
 			int p = stoi(opcode_addr,nullptr,16);
@@ -248,7 +253,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	// if(indirect || direct || (immediate && !number_operand))
 	{
 			pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
-			 operand_addr = *(SYMTAB_address.begin() + pos);
+			operand_addr = *(SYMTAB_address.begin() + pos);
 
 			bool use_base = false;
 			if(!extended){
@@ -260,17 +265,26 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			
 			//now have to check whether the displacement is less than 12 bits or not
 			// cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
-			adjust_length(disp, 3);
+			cout << "displacement is" << disp <<endl;
 			if(disp.size() > 3)
 			{
 				cout <<"How???" <<endl;
 				//disp[disp.size()-4] .. disp[0]
-				if(disp[3] != 'f')
-				for(int i= disp.size()-4; i>=0;i--) if(disp[i]!='0') {use_base = true;break;}
+				if(disp[0] != 'f'){
+					cout << "positive checking";
+					for(int i= disp.size()-4; i>=0;i--) if(disp[i]!='0') {use_base = true;break;}
+				}
+				else{
+					cout << "complement checking";
+					for(int i= disp.size()-4; i>=0;i--) if(disp[i]!='f') {use_base = true;break;}
+				}
+
 			}
+			adjust_length(disp, 3);
 			// cout <<"fighting maya 4"<<endl;
 
 			//if have to use base
+			cout << use_base <<endl;
 			if(use_base){
 				// cout << "Have to use base." <<endl;
 				middle |= 4;
@@ -283,8 +297,10 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			} //!extended end
 			//cutout 
 			adjust_length(operand_addr, cutout);
-			cout <<"middle"<<middle<<endl;			
-			operand_addr = to_string(middle)+operand_addr;
+			cout <<"middle"<<middle<<endl;		
+			ss.str("");
+			ss << hex << middle;	
+			operand_addr = ss.str()+operand_addr;
 			
 			// cout <<"fighting maya 3   "<< opcode_addr<<endl;
 			// cout << opcode_addr +"string";
@@ -582,6 +598,7 @@ int main(int argc, char const *argv[])
 				{
 					int pos = find(SYMTAB_name.begin() ,SYMTAB_name.end() , operand) - SYMTAB_name.begin();
 					base_register = *(pos + SYMTAB_address.begin()); 
+					cout << "BASE set ! " << base_register <<endl;
 				} else
 
 
