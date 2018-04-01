@@ -37,7 +37,8 @@ void write_the_text_record(string& text_record, string object_code, ofstream& ou
 	if(text_record.size() + object_code.size() > 69){
 		length_text_record(text_record);
 		cout << "=============================================================================" <<endl;
-		out << text_record <<endl;
+		transform(text_record.begin(), text_record.end(), text_record.begin(), ::toupper);
+		out << uppercase <<text_record <<endl;
 				//initialize_T(text_record);
 		text_record = "T";
 		stringstream ss;
@@ -563,13 +564,16 @@ int main(int argc, char const *argv[])
 
 
 					
-				out << "H" << label;
+				out << uppercase << "H" << label;
 				for(int i=label.size();i < 6;i++) out << " ";
 					for (int i = operand.size(); i < 6; ++i)
 						out << 0;
-					out << operand;
+		transform(operand.begin(), operand.end(), operand.begin(), ::toupper);
+					out << uppercase <<operand;
+
 					for (int i = to_string(locctr).size(); i < 6; ++i)
 						out << 0;
+
 					out << locctr << endl;
 
 				//new text record initialized
@@ -584,13 +588,13 @@ int main(int argc, char const *argv[])
 				if(opcode == "END"){
 				// write last text record 
 					length_text_record(text_record);
-					out << text_record << endl;
+					out << uppercase<<text_record << endl;
 					out << "E";
 					int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), operand) - SYMTAB_name.begin();
 					string program_start = *(SYMTAB_address.begin() + pos) ;
 					for (int i = program_start.size(); i < 6 ; ++i)
 						out << "0";
-					out << program_start << endl;
+					out << uppercase<<program_start << endl;
 					// cout << "16"<<endl;
 
 				} 
@@ -606,7 +610,9 @@ int main(int argc, char const *argv[])
 					if(text_record_printer == false){
 						cout << ")))))))))))))))))))))))))))))))))))))))))"<<endl;
 						length_text_record(text_record);
-							out << text_record << endl;
+		transform(text_record.begin(), text_record.end(), text_record.begin(), ::toupper);
+
+							out << uppercase<<text_record << endl;
 							text_record = "T";
 							stringstream ss;
 							ss << hex << locctr;
