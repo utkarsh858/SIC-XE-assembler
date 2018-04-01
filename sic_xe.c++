@@ -421,7 +421,7 @@ int main(int argc, char const *argv[])
 				program_length = locctr;
 				// 
 
-			} // end opcode
+			} 
 			else {	
 				vector<string>::iterator pos;
 
@@ -435,10 +435,17 @@ int main(int argc, char const *argv[])
 						//not found
 						SYMTAB_name.push_back(label);
 						
-						stringstream ss ;
-						ss << hex << locctr;
-						SYMTAB_address.push_back(ss.str());
-						SYMTAB_error_flag.push_back("");
+						if(opcode != "EQU"){
+							stringstream ss ;
+							ss << hex << locctr;
+							SYMTAB_address.push_back(ss.str());
+						}else{
+							if(find(SYMTAB_name.begin(),SYMTAB_name.end(),operand) == SYMTAB_name.end()){
+								OPCODE_errors.push_back("Undefined Label -> "+operand);continue;
+							}
+							int pos = find(SYMTAB_name.begin(),SYMTAB_name.end(),operand)-SYMTAB_name.begin();
+							SYMTAB_address.push_back(*(pos+SYMTAB_address.begin()));
+						}
 					}
 					// 
 
@@ -490,13 +497,14 @@ int main(int argc, char const *argv[])
 
 
 	
-	
-	for (vector<string>::iterator i = SYMTAB_name.begin(); i < SYMTAB_name.end(); ++i)
-	{
-		int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), *i) - SYMTAB_name.begin();
+	// cout << " SYMTAB ----------------" <<endl;
+	// for (vector<string>::iterator i = SYMTAB_name.begin(); i < SYMTAB_name.end(); ++i)
+	// {
+	// 	int pos = find(SYMTAB_name.begin(), SYMTAB_name.end(), *i) - SYMTAB_name.begin();
+	// 	cout << *(pos+SYMTAB_name.begin())<<"\t"<<endl;
+	// 	cout << *(pos+SYMTAB_address.begin())<<endl;
 		
-		
-	}
+	// }
 	in.close();
 	program_length = locctr;
 	locctr = 0 ;
@@ -658,6 +666,9 @@ int main(int argc, char const *argv[])
 						}else if(opcode == "RESW"){
 							text_record_printer = false;
 							locctr += stoi(operand) * 3;
+						}else if(opcode == "EQU"){
+							text_record_printer = false;
+							// no change in locctr
 						}
 			// 
 
