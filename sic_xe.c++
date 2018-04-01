@@ -87,6 +87,17 @@ string trim(string word) {
 	return word;
 }
 
+void mercy(vector<string>& v, string str){
+	string word;
+ 
+    // making a string stream
+    stringstream iss(str);
+ 
+    // Read and print each word.
+    while (iss >> word)
+        v.push_back(word);
+}
+
 void initialize_OPTAB(){
 
 	SYMTAB_name.push_back("A");	SYMTAB_name.push_back("X");	SYMTAB_name.push_back("L");	SYMTAB_name.push_back("B");	SYMTAB_name.push_back("S");	SYMTAB_name.push_back("T");	SYMTAB_name.push_back("F");
@@ -377,17 +388,19 @@ int main(int argc, char const *argv[])
 		//splitting the string
 		vector<string> args;
 
-		string delimiter = " ";
-		string token = x.substr(0, x.find(delimiter));
-		// cout << "1" <<endl;
-		size_t pos = 0;
-		while ((pos = x.find(delimiter)) != string::npos) {
-			token = x.substr(0, pos);
-			args.push_back(token);		    
-			x.erase(0, pos + delimiter.length());
-		}  
-		args.push_back(x.substr(0, x.size()));
-		// cout << "2" <<endl;
+		// string delimiter = " ";
+		// string token = x.substr(0, x.find(delimiter));
+		// // cout << "1" <<endl;
+		// size_t pos = 0;
+		// while ((pos = x.find(delimiter)) != string::npos) {
+		// 	token = x.substr(0, pos);
+		// 	args.push_back(token);		    
+		// 	x.erase(0, pos + delimiter.length());
+		// }  
+		// args.push_back(x.substr(0, x.size()));
+		// // cout << "2" <<endl;
+
+		mercy(args, x);
 
 		int size = args.size();
 
