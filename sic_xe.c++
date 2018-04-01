@@ -214,7 +214,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	if(!immediate && !indirect) ni_tweak = 3;
 	int middle = 0 | ((int)index << 3) ;
 	bool number_operand = (int)operand[0] <= 57 && (int)operand[0] >= 48;
-	int cutout = ((int)extended)? 5:3;
+	int cutout = (extended)? 5:3;
 	middle |= (int)extended;
 	cout << middle;
 	// cout << "pop4 " << "format : "<< format<<endl;
@@ -231,6 +231,15 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			cout << operand_addr << "ooo"<<endl;
 			adjust_length(operand_addr, cutout);
 			operand_addr = to_string(middle)+operand_addr;
+
+			//opcode adjustment
+			ss.str("");
+			int p = stoi(opcode_addr,nullptr,16);
+			ss << dec << p <<endl;
+			ss << hex << (stoi(ss.str()) | ni_tweak);
+			opcode_addr = ss.str().substr(ss.str().size()-2,2);
+			if(opcode_addr.size() == 1) opcode_addr = "0"+opcode_addr;
+
 	} else 
 
 	// if(indirect || direct || (immediate && !number_operand))
@@ -248,7 +257,7 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 			
 			//now have to check whether the displacement is less than 12 bits or not
 			// cout <<"fighting maya 2"<<"displacement is"<< operand_addr<<endl;
-			
+			adjust_length(disp, 3);
 			if(disp.size() > 3)
 			{
 				cout <<"How???" <<endl;
