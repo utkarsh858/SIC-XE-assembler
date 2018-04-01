@@ -19,6 +19,7 @@ using namespace std;
 	vector <string> OPTAB_name;
 	vector <string> OPTAB_code;
 	vector <string> OPTAB_type;
+	vector <int> modification_records;
 
 void length_text_record(string& text_record){
 	
@@ -56,36 +57,6 @@ void write_the_text_record(string& text_record, string object_code, ofstream& ou
 	text_record += object_code;
 }
 
-string removeSpaces(string word , string position){
-
-	if(position == "Front"){
-		for(int i =0;  i <word.length();i++){
-			if(word[i] != ' '){
-				return word;
-			}else{
-				word.erase(i);
-			}
-		}
-		return word;
-
-	}else if(position == "Back"){
-		for(int i =word.length() - 1 ;  i >=0 ; i--){
-			if(word[i] != ' '){
-				return word;
-			}else{
-				word.erase(i);
-			}
-		}
-		return word;
-	}
-}
-
-string trim(string word) {
-
-	if(word[0] == ' ') return removeSpaces(word, "Front");
-	if(word[word.size()-1] == ' ') return removeSpaces(word , "Back");
-	return word;
-}
 
 void mercy(vector<string>& v, string str){
 	string word;
@@ -132,9 +103,11 @@ void initialize_OPTAB(){
 }
 
 void adjust_length(string& s, int l){
-	if(s.size()<l)
-		for (int i = 0; i <= l-s.size(); ++i)
+	if(s.size()<l){
+		int size = s.size();
+		for (int i = 0; i <= l-size; ++i)
 			s= "0"+s;
+	}
 	else s = s.substr(s.size()-l,l);
 
 	
@@ -230,9 +203,10 @@ string make_my_code(string opcode, string operand,long locctr,string B){
 	int cutout = (extended)? 5:3;
 	middle |= (int)extended;
 	
-	// 
-	
-	
+	if(extended && !immediate){ 
+	modification_records.push_back(locctr);
+	cout << locctr <<endl;
+	}
 	if(format == "3"){
 	if(immediate && number_operand ){
 		//immediate handling
@@ -696,15 +670,26 @@ int main(int argc, char const *argv[])
 		label = "";
 	}
 
+	for (std::vector<int>::iterator i = modification_records.begin(); i != modification_records.end(); ++i)
+	{
+		out << "M" ;
+		stringstream ss;
+		
+		ss << hex << *i;
+		string temp = ss.str();
+		adjust_length(temp,6);
+		out << temp << "05" << endl;
+	}
 
+	out.close();
 	// duplicate label, invalid opcode, invalid register, undefined label, incorrect no. of words in statements
 	if(OPCODE_errors.size() > 0)
 	cout << "\tERRORs are always welcome!\n";
+	else system("less output.txt");
 	for (std::vector<string>::iterator i = OPCODE_errors.begin(); i != OPCODE_errors.end(); ++i)
 	{
 		cout << *i <<endl;
 	}
 
-out.close();
 return 0;
 }
