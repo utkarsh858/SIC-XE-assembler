@@ -379,7 +379,7 @@ int main(int argc, char const *argv[])
 	string label = "";
 
 	//Pass 1
-	while (getline(in, x)){
+	while (getline(in, x) ){
 		// cout << "Got this::: " << x;
 		if(x != "")
 			commands.push(x);
@@ -388,17 +388,6 @@ int main(int argc, char const *argv[])
 		//splitting the string
 		vector<string> args;
 
-		// string delimiter = " ";
-		// string token = x.substr(0, x.find(delimiter));
-		// // cout << "1" <<endl;
-		// size_t pos = 0;
-		// while ((pos = x.find(delimiter)) != string::npos) {
-		// 	token = x.substr(0, pos);
-		// 	args.push_back(token);		    
-		// 	x.erase(0, pos + delimiter.length());
-		// }  
-		// args.push_back(x.substr(0, x.size()));
-		// // cout << "2" <<endl;
 
 		mercy(args, x);
 
@@ -416,17 +405,11 @@ int main(int argc, char const *argv[])
 			opcode = args[0];
 
 		}
-		// cout << "3" <<endl;
 
-		//trimming failed
-		// args[0] = trim(args[0]);
-		// args[1] = trim(args[1]);
-		// if(args.size() == 3)
-			// args[0] = trim(args[0]);
 			cout << label << "|"<< opcode << "|"<< operand <<endl;
 			// cout << "4" << endl;
 			cout << locctr << endl;
-		if(args[0][0] != '.'){  // comment handling
+		if(args[0][0] != '.' && (args.size() != 0)){  // comment handling
 			if(opcode == "START"){ // strting address
 
 				starting_addr = stoi(operand,nullptr,16);
@@ -533,23 +516,11 @@ int main(int argc, char const *argv[])
 	while(!commands.empty()){
 		x = commands.front();
 		commands.pop();
+
 		//splitting the string
 		vector<string> args;
 		string object_code = "";
-		string delimiter = " ";
-		string token = x.substr(0, x.find(delimiter));
-		string opcode_num;
-		size_t pos = 0;
-		// cout << "12"<<endl;
-
-		while ((pos = x.find(delimiter)) != string::npos) {
-			token = x.substr(0, pos);
-			args.push_back(token);		    
-			x.erase(0, pos + delimiter.length());
-		}  
-		args.push_back(x.substr(0, x.size()));
-
-		// cout << "13"<<endl;
+		mercy(args, x);
 
 		int size = args.size();
 
@@ -703,6 +674,8 @@ int main(int argc, char const *argv[])
 		opcode = "";
 		label = "";
 	}
+
+	
 out.close();
 return 0;
 }
